@@ -1,5 +1,5 @@
 package Ligca;
 
-public class Cita {
+public class Local {
 
 }
