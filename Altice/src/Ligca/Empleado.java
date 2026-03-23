@@ -11,8 +11,9 @@ public abstract class Empleado extends Persona {
     protected double salario;
     protected Date fechaIngreso;
     protected String estado;
-	public Empleado(String codigo, double salario, Date fechaIngreso, String estado) {
-		super();
+	public Empleado(String id, String cedula, String nombre, String apellido, String telefono, String email,
+			String direccion, Date fechaRegistro, String codigo, double salario, Date fechaIngreso, String estado) {
+		super(id, cedula, nombre, apellido, telefono, email, direccion, fechaRegistro);
 		this.codigo = codigo;
 		this.salario = salario;
 		this.fechaIngreso = fechaIngreso;
@@ -48,5 +49,4 @@ public abstract class Empleado extends Persona {
 	public static String getInactivo() {
 		return INACTIVO;
 	}
-
 }

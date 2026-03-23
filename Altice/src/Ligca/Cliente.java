@@ -1,6 +1,7 @@
 package Ligca;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Cliente extends Persona {
 	 public static final String ACTIVO = "activo";
@@ -12,9 +13,10 @@ public class Cliente extends Persona {
 	 private String estado;
 	 private ArrayList<Contrato> contratos;
 	 private Comercial vendedorAsignado;
-	 public Cliente(String codigoCliente, String tipoCliente, String estado, ArrayList<Contrato> contratos,
-			Comercial vendedorAsignado) {
-		super();
+	 public Cliente(String id, String cedula, String nombre, String apellido, String telefono, String email,
+			String direccion, Date fechaRegistro, String codigoCliente, String tipoCliente, String estado,
+			ArrayList<Contrato> contratos, Comercial vendedorAsignado) {
+		super(id, cedula, nombre, apellido, telefono, email, direccion, fechaRegistro);
 		this.codigoCliente = codigoCliente;
 		this.tipoCliente = tipoCliente;
 		this.estado = estado;
@@ -60,5 +62,6 @@ public class Cliente extends Persona {
 	 public static String getInactivo() {
 		 return INACTIVO;
 	 }
+	 
 
 }
