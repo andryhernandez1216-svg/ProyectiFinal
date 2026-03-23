@@ -1,5 +1,8 @@
 package Ligca;
 
-public class Trabajador {
+public class Trabajador extends Empleado{
+	private String cargo;
+    private String departamento;
+    
 
 }
