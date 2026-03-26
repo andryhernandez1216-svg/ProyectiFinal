@@ -1,67 +1,55 @@
 package Ligca;
 
-import java.util.ArrayList;
-import java.util.Date;
-
 public class Cliente extends Persona {
-	 public static final String ACTIVO = "activo";
-	 public static final String SUSPENDIDO = "suspendido";
-	 public static final String INACTIVO = "inactivo";
 
-	 private String codigoCliente;
-	 private String tipoCliente;
-	 private String estado;
-	 private ArrayList<Contrato> contratos;
-	 private Comercial vendedorAsignado;
-	 public Cliente(String id, String cedula, String nombre, String apellido, String telefono, String email,
-			String direccion, Date fechaRegistro, String codigoCliente, String tipoCliente, String estado,
-			ArrayList<Contrato> contratos, Comercial vendedorAsignado) {
+	private String codigoCliente;
+	private String tipoCliente;
+	private boolean estado;
+	private float deuda;
+	private int cantDePagosAtrasados;
+	
+	public String getCodigoCliente() {
+		return codigoCliente;
+	}
+	public void setCodigoCliente(String codigoCliente) {
+		this.codigoCliente = codigoCliente;
+	}
+	public String getTipoCliente() {
+		return tipoCliente;
+	}
+	public void setTipoCliente(String tipoCliente) {
+		this.tipoCliente = tipoCliente;
+	}
+	public boolean isEstado() {
+		return estado;
+	}
+	public void setEstado(boolean estado) {
+		this.estado = estado;
+	}
+	public float getDeuda() {
+		return deuda;
+	}
+	public void setDeuda(float deuda) {
+		this.deuda = deuda;
+	}
+	public int getCantDePagosAtrasados() {
+		return cantDePagosAtrasados;
+	}
+	public void setCantDePagosAtrasados(int cantDePagosAtrasados) {
+		this.cantDePagosAtrasados = cantDePagosAtrasados;
+	}
+	public Cliente(String id, String cedula, String nombre, String apellido, String telefono, String email,
+			String direccion, Date fechaRegistro, String codigoCliente, String tipoCliente, boolean estado, float deuda,
+			int cantDePagosAtrasados) {
 		super(id, cedula, nombre, apellido, telefono, email, direccion, fechaRegistro);
 		this.codigoCliente = codigoCliente;
 		this.tipoCliente = tipoCliente;
-		this.estado = estado;
-		this.contratos = contratos;
-		this.vendedorAsignado = vendedorAsignado;
-	 }
-	 public String getCodigoCliente() {
-		 return codigoCliente;
-	 }
-	 public void setCodigoCliente(String codigoCliente) {
-		 this.codigoCliente = codigoCliente;
-	 }
-	 public String getTipoCliente() {
-		 return tipoCliente;
-	 }
-	 public void setTipoCliente(String tipoCliente) {
-		 this.tipoCliente = tipoCliente;
-	 }
-	 public String getEstado() {
-		 return estado;
-	 }
-	 public void setEstado(String estado) {
-		 this.estado = estado;
-	 }
-	 public ArrayList<Contrato> getContratos() {
-		 return contratos;
-	 }
-	 public void setContratos(ArrayList<Contrato> contratos) {
-		 this.contratos = contratos;
-	 }
-	 public Comercial getVendedorAsignado() {
-		 return vendedorAsignado;
-	 }
-	 public void setVendedorAsignado(Comercial vendedorAsignado) {
-		 this.vendedorAsignado = vendedorAsignado;
-	 }
-	 public static String getActivo() {
-		 return ACTIVO;
-	 }
-	 public static String getSuspendido() {
-		 return SUSPENDIDO;
-	 }
-	 public static String getInactivo() {
-		 return INACTIVO;
-	 }
-	 
+		this.estado = true;
+		this.deuda = deuda;
+		this.cantDePagosAtrasados = cantDePagosAtrasados;
+	}
+	
+	
 
+	
 }
