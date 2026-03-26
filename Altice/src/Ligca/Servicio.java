@@ -5,18 +5,9 @@ public class Servicio {
 	private String idServicio;
     private String nombre;
     private String descripcion;
-    private double precio;
+    private float precio;
     private String tipo; 
-    private String estado;
-	public Servicio(String idServicio, String nombre, String descripcion, double precio, String tipo, String estado) {
-		super();
-		this.idServicio = idServicio;
-		this.nombre = nombre;
-		this.descripcion = descripcion;
-		this.precio = precio;
-		this.tipo = tipo;
-		this.estado = estado;
-	}
+    private boolean estado;
 	public String getIdServicio() {
 		return idServicio;
 	}
@@ -35,10 +26,10 @@ public class Servicio {
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}
-	public double getPrecio() {
+	public float getPrecio() {
 		return precio;
 	}
-	public void setPrecio(double precio) {
+	public void setPrecio(float precio) {
 		this.precio = precio;
 	}
 	public String getTipo() {
@@ -47,10 +38,21 @@ public class Servicio {
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
 	}
-	public String getEstado() {
+	public boolean isEstado() {
 		return estado;
 	}
-	public void setEstado(String estado) {
+	public void setEstado(boolean estado) {
 		this.estado = estado;
 	}
+	public Servicio(String idServicio, String nombre, String descripcion, float precio, String tipo, boolean estado) {
+		super();
+		this.idServicio = idServicio;
+		this.nombre = nombre;
+		this.descripcion = descripcion;
+		this.precio = precio;
+		this.tipo = tipo;
+		this.estado = true;
+	}
+    
+	
 }
