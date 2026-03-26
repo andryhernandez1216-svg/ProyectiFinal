@@ -4,14 +4,15 @@ import java.util.Date;
 
 public  abstract class Persona {
 	
-	 protected String id;
-	 protected String cedula;
-	 protected String nombre;
-	 protected String apellido;
-	 protected String telefono;
-	 protected String email;
-	 protected String direccion;
-	 protected Date fechaRegistro;
+	 private String id;
+	 private String cedula;
+	 private String nombre;
+	 private String apellido;
+	 private String telefono;
+	 private String email;
+	 private String direccion;
+	 private Date fechaRegistro;
+	 
 	 public Persona(String id, String cedula, String nombre, String apellido, String telefono, String email,
 			String direccion, Date fechaRegistro) {
 		super();
