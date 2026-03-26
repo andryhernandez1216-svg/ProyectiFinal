@@ -2,33 +2,25 @@ package Ligca;
 
 import java.util.Date;
 
-public abstract class Empleado extends Persona {
+public class Empleado extends Persona {
 	
-	public static final String ACTIVO = "activo";
-    public static final String INACTIVO = "inactivo";
 
-    protected String codigo;
-    protected double salario;
-    protected Date fechaIngreso;
-    protected String estado;
-	public Empleado(String id, String cedula, String nombre, String apellido, String telefono, String email,
-			String direccion, Date fechaRegistro, String codigo, double salario, Date fechaIngreso, String estado) {
-		super(id, cedula, nombre, apellido, telefono, email, direccion, fechaRegistro);
-		this.codigo = codigo;
-		this.salario = salario;
-		this.fechaIngreso = fechaIngreso;
-		this.estado = estado;
-	}
+    private String codigo;
+    private float salario;
+    private Date fechaIngreso;
+    private String estado;
+    private float comisiones;
+    private boolean activo;
 	public String getCodigo() {
 		return codigo;
 	}
 	public void setCodigo(String codigo) {
 		this.codigo = codigo;
 	}
-	public double getSalario() {
+	public float getSalario() {
 		return salario;
 	}
-	public void setSalario(double salario) {
+	public void setSalario(float salario) {
 		this.salario = salario;
 	}
 	public Date getFechaIngreso() {
@@ -43,10 +35,29 @@ public abstract class Empleado extends Persona {
 	public void setEstado(String estado) {
 		this.estado = estado;
 	}
-	public static String getActivo() {
-		return ACTIVO;
+	public float getComisiones() {
+		return comisiones;
 	}
-	public static String getInactivo() {
-		return INACTIVO;
+	public void setComisiones(float comisiones) {
+		this.comisiones = comisiones;
 	}
+	public boolean isActivo() {
+		return activo;
+	}
+	public void setActivo(boolean activo) {
+		this.activo = activo;
+	}
+	public Empleado(String id, String cedula, String nombre, String apellido, String telefono, String email,
+			String direccion, Date fechaRegistro, String codigo, float salario, Date fechaIngreso, String estado,
+			float comisiones, boolean activo) {
+		super(id, cedula, nombre, apellido, telefono, email, direccion, fechaRegistro);
+		this.codigo = codigo;
+		this.salario = salario;
+		this.fechaIngreso = fechaIngreso;
+		this.estado = estado;
+		this.comisiones = comisiones;
+		this.activo = true;
+	}
+	
+    
 }
