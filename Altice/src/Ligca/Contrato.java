@@ -1,32 +1,16 @@
 package Ligca;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 public class Contrato {
-	public static final String ACTIVO = "activo";
-    public static final String CANCELADO = "cancelado";
 
     private String idContrato;
     private Cliente cliente;
     private Plan plan;
     private Date fechaInicio;
     private Date fechaFin;
-    private String estado;
-    private ArrayList<Servicio> serviciosAdicionales;
-    private double descuento;
-	public Contrato(String idContrato, Cliente cliente, Plan plan, Date fechaInicio, Date fechaFin, String estado,
-			ArrayList<Servicio> serviciosAdicionales, double descuento) {
-		super();
-		this.idContrato = idContrato;
-		this.cliente = cliente;
-		this.plan = plan;
-		this.fechaInicio = fechaInicio;
-		this.fechaFin = fechaFin;
-		this.estado = estado;
-		this.serviciosAdicionales = serviciosAdicionales;
-		this.descuento = descuento;
-	}
+    private boolean estado;
+    private Servicio servicios;
 	public String getIdContrato() {
 		return idContrato;
 	}
@@ -57,30 +41,30 @@ public class Contrato {
 	public void setFechaFin(Date fechaFin) {
 		this.fechaFin = fechaFin;
 	}
-	public String getEstado() {
+	public boolean isEstado() {
 		return estado;
 	}
-	public void setEstado(String estado) {
+	public void setEstado(boolean estado) {
 		this.estado = estado;
 	}
-	public ArrayList<Servicio> getServiciosAdicionales() {
-		return serviciosAdicionales;
+	public Servicio getServicios() {
+		return servicios;
 	}
-	public void setServiciosAdicionales(ArrayList<Servicio> serviciosAdicionales) {
-		this.serviciosAdicionales = serviciosAdicionales;
+	public void setServicios(Servicio servicios) {
+		this.servicios = servicios;
 	}
-	public double getDescuento() {
-		return descuento;
+	public Contrato(String idContrato, Cliente cliente, Plan plan, Date fechaInicio, Date fechaFin, boolean estado,
+			Servicio servicios) {
+		super();
+		this.idContrato = idContrato;
+		this.cliente = cliente;
+		this.plan = plan;
+		this.fechaInicio = fechaInicio;
+		this.fechaFin = fechaFin;
+		this.estado = true;
+		this.servicios = servicios;
 	}
-	public void setDescuento(double descuento) {
-		this.descuento = descuento;
-	}
-	public static String getActivo() {
-		return ACTIVO;
-	}
-	public static String getCancelado() {
-		return CANCELADO;
-	}
-
+    
+	
 
 }
