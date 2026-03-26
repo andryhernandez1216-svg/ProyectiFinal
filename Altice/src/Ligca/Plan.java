@@ -6,22 +6,10 @@ public class Plan {
     private String nombre;
     private String descripcion;
     private String velocidad; 
-    private double precio;
+    private float precio;
     private String tipo; 
     private int duracionContrato; 
-    private String estado;
-	public Plan(String idPlan, String nombre, String descripcion, String velocidad, double precio, String tipo,
-			int duracionContrato, String estado) {
-		super();
-		this.idPlan = idPlan;
-		this.nombre = nombre;
-		this.descripcion = descripcion;
-		this.velocidad = velocidad;
-		this.precio = precio;
-		this.tipo = tipo;
-		this.duracionContrato = duracionContrato;
-		this.estado = estado;
-	}
+    private boolean estado;
 	public String getIdPlan() {
 		return idPlan;
 	}
@@ -46,10 +34,10 @@ public class Plan {
 	public void setVelocidad(String velocidad) {
 		this.velocidad = velocidad;
 	}
-	public double getPrecio() {
+	public float getPrecio() {
 		return precio;
 	}
-	public void setPrecio(double precio) {
+	public void setPrecio(float precio) {
 		this.precio = precio;
 	}
 	public String getTipo() {
@@ -64,10 +52,24 @@ public class Plan {
 	public void setDuracionContrato(int duracionContrato) {
 		this.duracionContrato = duracionContrato;
 	}
-	public String getEstado() {
+	public boolean isEstado() {
 		return estado;
 	}
-	public void setEstado(String estado) {
+	public void setEstado(boolean estado) {
 		this.estado = estado;
-	} 
+	}
+	public Plan(String idPlan, String nombre, String descripcion, String velocidad, float precio, String tipo,
+			int duracionContrato, boolean estado) {
+		super();
+		this.idPlan = idPlan;
+		this.nombre = nombre;
+		this.descripcion = descripcion;
+		this.velocidad = velocidad;
+		this.precio = precio;
+		this.tipo = tipo;
+		this.duracionContrato = duracionContrato;
+		this.estado = true;
+	}
+    
+	
 }
