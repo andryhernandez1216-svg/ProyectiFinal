@@ -49,12 +49,12 @@ public class SistemaAltice {
 	public SistemaAltice(ArrayList<Cliente> clientes, ArrayList<Empleado> empleados, ArrayList<Plan> planes,
 			ArrayList<Contrato> contratos, ArrayList<Pago> pagos, ArrayList<Servicio> servicios) {
 		super();
-		this.clientes = clientes;
-		this.empleados = empleados;
-		this.planes = planes;
-		this.contratos = contratos;
-		this.pagos = pagos;
-		this.servicios = servicios;
+		this.clientes = new ArrayList<>();
+		this.empleados = new ArrayList<>();
+		this.planes = new ArrayList<>();
+		this.contratos = new ArrayList<>();
+		this.pagos = new ArrayList<>();
+		this.servicios = new ArrayList<>();
 	}
     
 	
