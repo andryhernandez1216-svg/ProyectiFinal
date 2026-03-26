@@ -4,32 +4,27 @@ import java.util.Date;
 
 public class Pago {
 	private String idPago;
-    private Factura factura;
-    private double monto;
+    private String idContrato;
+    private float monto;
     private Date fecha;
-	public Pago(String idPago, Factura factura, double monto, Date fecha) {
-		super();
-		this.idPago = idPago;
-		this.factura = factura;
-		this.monto = monto;
-		this.fecha = fecha;
-	}
+    private boolean pagado;
+    
 	public String getIdPago() {
 		return idPago;
 	}
 	public void setIdPago(String idPago) {
 		this.idPago = idPago;
 	}
-	public Factura getFactura() {
-		return factura;
+	public String getIdContrato() {
+		return idContrato;
 	}
-	public void setFactura(Factura factura) {
-		this.factura = factura;
+	public void setIdContrato(String idContrato) {
+		this.idContrato = idContrato;
 	}
-	public double getMonto() {
+	public float getMonto() {
 		return monto;
 	}
-	public void setMonto(double monto) {
+	public void setMonto(float monto) {
 		this.monto = monto;
 	}
 	public Date getFecha() {
@@ -38,5 +33,22 @@ public class Pago {
 	public void setFecha(Date fecha) {
 		this.fecha = fecha;
 	}
+	public boolean isPagado() {
+		return pagado;
+	}
+	public void setPagado(boolean pagado) {
+		this.pagado = pagado;
+	}
+	
+	public Pago(String idPago, String idContrato, float monto, Date fecha, boolean pagado) {
+		super();
+		this.idPago = idPago;
+		this.idContrato = idContrato;
+		this.monto = monto;
+		this.fecha = fecha;
+		this.pagado = true;
+	}
+    
+	
 
 }
