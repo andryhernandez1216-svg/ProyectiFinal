@@ -7,24 +7,9 @@ public class SistemaAltice {
 	private ArrayList<Cliente> clientes;
     private ArrayList<Empleado> empleados;
     private ArrayList<Plan> planes;
-    private ArrayList<Factura> facturas;
     private ArrayList<Contrato> contratos;
     private ArrayList<Pago> pagos;
-    private ArrayList<Local> locales;
     private ArrayList<Servicio> servicios;
-	public SistemaAltice(ArrayList<Cliente> clientes, ArrayList<Empleado> empleados, ArrayList<Plan> planes,
-			ArrayList<Factura> facturas, ArrayList<Contrato> contratos, ArrayList<Pago> pagos, ArrayList<Local> locales,
-			ArrayList<Servicio> servicios) {
-		super();
-		this.clientes = clientes;
-		this.empleados = empleados;
-		this.planes = planes;
-		this.facturas = facturas;
-		this.contratos = contratos;
-		this.pagos = pagos;
-		this.locales = locales;
-		this.servicios = servicios;
-	}
 	public ArrayList<Cliente> getClientes() {
 		return clientes;
 	}
@@ -43,12 +28,6 @@ public class SistemaAltice {
 	public void setPlanes(ArrayList<Plan> planes) {
 		this.planes = planes;
 	}
-	public ArrayList<Factura> getFacturas() {
-		return facturas;
-	}
-	public void setFacturas(ArrayList<Factura> facturas) {
-		this.facturas = facturas;
-	}
 	public ArrayList<Contrato> getContratos() {
 		return contratos;
 	}
@@ -61,16 +40,22 @@ public class SistemaAltice {
 	public void setPagos(ArrayList<Pago> pagos) {
 		this.pagos = pagos;
 	}
-	public ArrayList<Local> getLocales() {
-		return locales;
-	}
-	public void setLocales(ArrayList<Local> locales) {
-		this.locales = locales;
-	}
 	public ArrayList<Servicio> getServicios() {
 		return servicios;
 	}
 	public void setServicios(ArrayList<Servicio> servicios) {
 		this.servicios = servicios;
 	}
+	public SistemaAltice(ArrayList<Cliente> clientes, ArrayList<Empleado> empleados, ArrayList<Plan> planes,
+			ArrayList<Contrato> contratos, ArrayList<Pago> pagos, ArrayList<Servicio> servicios) {
+		super();
+		this.clientes = clientes;
+		this.empleados = empleados;
+		this.planes = planes;
+		this.contratos = contratos;
+		this.pagos = pagos;
+		this.servicios = servicios;
+	}
+    
+	
 }
