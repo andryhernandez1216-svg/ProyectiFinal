@@ -11,33 +11,44 @@ public class Servicio {
 	public String getIdServicio() {
 		return idServicio;
 	}
-	public void setIdServicio(String idServicio) {
-		this.idServicio = idServicio;
-	}
+	public void setIdServicio(String idServicio) throws Exception {
+        if (idServicio == null || idServicio.trim().isEmpty())
+            throw new Exception("El id del servicio no puede estar vacio.");
+        this.idServicio = idServicio;
+    }
+
 	public String getNombre() {
 		return nombre;
 	}
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
+	public void setNombre(String nombre) throws Exception {
+        if (nombre == null || nombre.trim().isEmpty())
+            throw new Exception("El nombre del servicio no puede estar vacio.");
+        this.nombre = nombre;
+    }
 	public String getDescripcion() {
 		return descripcion;
 	}
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
+	public void setDescripcion(String descripcion) throws Exception {
+        if (descripcion == null || descripcion.trim().isEmpty())
+            throw new Exception("La descripcion del servicio no puede estar vacia.");
+        this.descripcion = descripcion;
+    }
 	public float getPrecio() {
 		return precio;
 	}
-	public void setPrecio(float precio) {
-		this.precio = precio;
-	}
+	public void setPrecio(float precio) throws Exception {
+        if (precio <= 0)
+            throw new Exception("El precio del servicio debe ser mayor a 0.");
+        this.precio = precio;
+    }
 	public String getTipo() {
 		return tipo;
 	}
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
-	}
+	public void setTipo(String tipo) throws Exception {
+        if (tipo == null || tipo.trim().isEmpty())
+            throw new Exception("El tipo del servicio no puede estar vacio.");
+        this.tipo = tipo;
+    }
 	public boolean isEstado() {
 		return estado;
 	}
@@ -46,13 +57,17 @@ public class Servicio {
 	}
 	public Servicio(String idServicio, String nombre, String descripcion, float precio, String tipo, boolean estado) {
 		super();
-		this.idServicio = idServicio;
-		this.nombre = nombre;
-		this.descripcion = descripcion;
-		this.precio = precio;
-		this.tipo = tipo;
-		this.estado = true;
-	}
+		try {
+            setIdServicio(idServicio);
+            setNombre(nombre);
+            setDescripcion(descripcion);
+            setTipo(tipo);
+            setPrecio(precio);
+            this.estado = estado;
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
     
 	
 }
