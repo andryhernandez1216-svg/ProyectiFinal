@@ -14,15 +14,14 @@ public class Plan {
     public Plan(String idPlan, String nombre, String descripcion, String velocidad, float precio, String tipo,
             int duracionContrato, boolean estado) throws Exception {
 
-    	
-	    	setIdPlan(idPlan);
-		    setNombre(nombre);
-		    setDescripcion(descripcion);
-		    setVelocidad(velocidad);
-		    setPrecio(precio);
-		    setTipo(tipo);
-		    setDuracionContrato(duracionContrato);
-		    this.estado = estado;
+        setIdPlan(idPlan);
+        setNombre(nombre);
+        setDescripcion(descripcion);
+        setVelocidad(velocidad);
+        setPrecio(precio);
+        setTipo(tipo);
+        setDuracionContrato(duracionContrato);
+        this.estado = estado;
     }
 
     public String getIdPlan() {
@@ -117,4 +116,48 @@ public class Plan {
         this.estado = estado;
     }
 
+
+    public void activar() {
+        estado = true;
+    }
+
+    public void desactivar() {
+        estado = false;
+    }
+
+
+    public boolean estaDisponible() {
+        return estado;
+    }
+
+    public void aplicarDescuento(float porcentaje) throws Exception {
+        if (porcentaje <= 0 || porcentaje > 100)
+            throw new Exception("Porcentaje inválido.");
+
+        precio -= precio * (porcentaje / 100);
+    }
+
+    public void aumentarPrecio(float porcentaje) throws Exception {
+        if (porcentaje <= 0)
+            throw new Exception("Porcentaje inválido.");
+
+        precio += precio * (porcentaje / 100);
+    }
+
+    public float calcularPrecioAnual() {
+        return precio * 12;
+    }
+    
+    public boolean esCombo() {
+        return tipo.equalsIgnoreCase("combo");
+    }
+
+    @Override
+    public String toString() {
+        return "Plan: " + nombre +
+               " | ID: " + idPlan +
+               " | Tipo: " + tipo +
+               " | Precio: RD$" + precio +
+               " | Estado: " + (estado ? "Disponible" : "No disponible");
+    }
 }

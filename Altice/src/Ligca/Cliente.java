@@ -58,14 +58,55 @@ public class Cliente extends Persona {
 		try {
 			setCodigoCliente(codigoCliente);
 			setDeuda(deuda);
+			setTipoCliente(tipoCliente);
 			setCantDePagosAtrasados(cantDePagosAtrasados);
 			this.estado = estado;
 		} catch (Exception e) {
 			throw new IllegalArgumentException(e.getMessage());
 		}
 	}
+	
+	public void agregarDeuda(float monto) throws Exception {
+	    if (monto <= 0)
+	        throw new Exception("Monto inválido.");
+	    deuda += monto;
+	}
+	
+	public void pagarDeuda(float monto) throws Exception {
+	    if (monto <= 0)
+	        throw new Exception("Monto inválido.");
 
+	    deuda -= monto;
 
+	    if (deuda < 0)
+	        deuda = 0;
 
+	    if (deuda == 0)
+	        cantDePagosAtrasados = 0;
+	}
+	
+	public void registrarPagoAtrasado() {
+	    cantDePagosAtrasados++;
+	}
+	
+	public void suspender() {
+	    estado = false;
+	}
+	
+	public void reactivar() {
+	    estado = true;
+	}
+	
+	public boolean esMoroso() {
+	    return deuda > 0 && cantDePagosAtrasados > 0;
+	}
+	
+	@Override
+	public String toString() {
+	    return "Cliente: " + getNombre() + " " + getApellido() +
+	           " | Código: " + codigoCliente +
+	           " | Estado: " + (estado ? "Activo" : "Inactivo") +
+	           " | Deuda: RD$" + deuda;
+	}
 
 }
