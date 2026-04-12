@@ -114,10 +114,6 @@ public class Servicio {
 
     @Override
     public String toString() {
-        return "Servicio: " + nombre +
-               " | ID: " + idServicio +
-               " | Tipo: " + tipo +
-               " | Precio: RD$" + precio +
-               " | Estado: " + (estado ? "Disponible" : "No disponible");
+        return nombre; // O como se llame la variable del nombre en tu clase Plan
     }
 }

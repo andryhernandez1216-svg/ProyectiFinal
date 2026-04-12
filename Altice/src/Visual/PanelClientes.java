@@ -1,94 +1,57 @@
 package Visual;
 
-
 import Ligca.Cliente;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.Date;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class PanelClientes extends JPanel {
     private JTable tabla;
     private DefaultTableModel modelo;
-    private JTextField txtId, txtCedula, txtNombre, txtApellido, txtCodCliente, txtDeuda;
-    private JComboBox<String> cbTipo;
+    private JTextField txtBuscar;
 
     public PanelClientes() {
-        setLayout(new BorderLayout(15, 15));
+        setLayout(new BorderLayout(10, 10));
         setBackground(Color.WHITE);
-        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // --- FORMULARIO ---
-        JPanel pnlInputs = new JPanel(new GridLayout(4, 4, 10, 10));
-        pnlInputs.setOpaque(false);
-
-        txtId = new JTextField(); txtCedula = new JTextField();
-        txtNombre = new JTextField(); txtApellido = new JTextField();
-        txtCodCliente = new JTextField(); txtDeuda = new JTextField("0");
-        cbTipo = new JComboBox<>(new String[]{"FISICA", "JURIDICO"});
-
-        pnlInputs.add(new JLabel("ID Persona:")); pnlInputs.add(txtId);
-        pnlInputs.add(new JLabel("Cédula:")); pnlInputs.add(txtCedula);
-        pnlInputs.add(new JLabel("Nombre:")); pnlInputs.add(txtNombre);
-        pnlInputs.add(new JLabel("Apellido:")); pnlInputs.add(txtApellido);
-        pnlInputs.add(new JLabel("Cod. Cliente:")); pnlInputs.add(txtCodCliente);
-        pnlInputs.add(new JLabel("Tipo:")); pnlInputs.add(cbTipo);
-        pnlInputs.add(new JLabel("Deuda Inicial:")); pnlInputs.add(txtDeuda);
-
-        // --- BOTONES CRUD ---
-        JPanel pnlBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton btnGuardar = new JButton("Guardar Cliente");
-        JButton btnLimpiar = new JButton("Limpiar");
+        txtBuscar = new JTextField();
+        txtBuscar.setBorder(BorderFactory.createTitledBorder("Buscar por nombre, cédula o código..."));
         
-        btnGuardar.setBackground(new Color(225, 0, 110));
-        btnGuardar.setForeground(Color.WHITE);
+        // Filtro en tiempo real
+        txtBuscar.addKeyListener(new KeyAdapter() {
+            public void keyReleased(KeyEvent e) {
+                actualizarTabla(txtBuscar.getText());
+            }
+        });
 
-        btnGuardar.addActionListener(e -> guardarCliente());
-        btnLimpiar.addActionListener(e -> limpiarCampos());
-
-        pnlBotones.add(btnLimpiar); pnlBotones.add(btnGuardar);
-
-        // --- TABLA ---
-        String[] columnas = {"ID", "Cédula", "Nombre", "Código", "Tipo", "Deuda", "Estado"};
-        modelo = new DefaultTableModel(columnas, 0);
+        modelo = new DefaultTableModel(new String[]{"ID", "Cédula", "Nombre", "Código", "Deuda"}, 0);
         tabla = new JTable(modelo);
-        actualizarTabla();
 
-        JPanel pnlNorte = new JPanel(new BorderLayout());
-        pnlNorte.add(pnlInputs, BorderLayout.CENTER);
-        pnlNorte.add(pnlBotones, BorderLayout.SOUTH);
-
-        add(pnlNorte, BorderLayout.NORTH);
+        add(txtBuscar, BorderLayout.NORTH);
         add(new JScrollPane(tabla), BorderLayout.CENTER);
+
+        actualizarTabla(""); // Carga inicial automática
     }
 
-    private void guardarCliente() {
-        try {
-            float deuda = Float.parseFloat(txtDeuda.getText());
-            Cliente c = new Cliente(
-                txtId.getText(), txtCedula.getText(), txtNombre.getText(), txtApellido.getText(),
-                "S/N", "S/N", "S/N", new Date(), 
-                txtCodCliente.getText(), cbTipo.getSelectedItem().toString(), true, deuda, 0
-            );
-            
-            GestionSistema.getInstancia().agregarCliente(c);
-            actualizarTabla();
-            limpiarCampos();
-            JOptionPane.showMessageDialog(this, "Cliente registrado exitosamente.");
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Validación", JOptionPane.ERROR_MESSAGE);
-        }
-    }
 
-    public void actualizarTabla() {
+    public void actualizarTabla(String filtro) {
         modelo.setRowCount(0);
+        // IMPORTANTE: Usar la instancia única
         for (Cliente c : GestionSistema.getInstancia().getClientes()) {
-            modelo.addRow(new Object[]{c.getId(), c.getCedula(), c.getNombreCompleto(), c.getCodigoCliente(), c.getTipoCliente(), c.getDeuda(), c.isEstado() ? "Activo" : "Inactivo"});
+            String busqueda = (c.getNombre() + " " + c.getApellido() + " " + c.getCedula()).toLowerCase();
+            
+            if (busqueda.contains(filtro.toLowerCase())) {
+                modelo.addRow(new Object[]{
+                    c.getId(),               // El ID autogenerado estático
+                    c.getCedula(),
+                    c.getNombreCompleto(),   // Método de Persona
+                    c.getCodigoCliente(),
+                    "RD$ " + c.getDeuda(),
+                    c.isEstado() ? "Activo" : "Inactivo"
+                });
+            }
         }
-    }
-
-    private void limpiarCampos() {
-        txtId.setText(""); txtCedula.setText(""); txtNombre.setText("");
-        txtApellido.setText(""); txtCodCliente.setText(""); txtDeuda.setText("0");
     }
 }

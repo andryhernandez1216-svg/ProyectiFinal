@@ -1,6 +1,5 @@
 package Visual;
 
-import java.util.ArrayList;
 import Ligca.SistemaAltice;
 
 public class GestionSistema {
@@ -8,8 +7,8 @@ public class GestionSistema {
 
     public static SistemaAltice getInstancia() {
         if (instancia == null) {
-            instancia = new SistemaAltice(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 
-                                         new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+            // Ahora llamamos al constructor vacío que definimos
+            instancia = new SistemaAltice();
         }
         return instancia;
     }

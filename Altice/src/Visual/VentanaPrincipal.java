@@ -1,159 +1,143 @@
 package Visual;
 
-
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import Ligca.Usuario;
-import Ligca.SistemaAltice;
 
 public class VentanaPrincipal extends JFrame {
 
-    private JPanel menuLateral;
-    private JPanel contenedorCentral;
+    private JPanel menuLateral, contenedorCentral;
     private CardLayout cardLayout;
-    
     private Usuario usuarioActual;
-    private SistemaAltice logica;
 
-    // Paneles (Instancias únicas para persistencia de datos en la vista)
+    // Paneles Funcionales
     private PanelDashboard pnlDash;
-    private PanelClientes pnlClientes;
-    private PanelVentas pnlVentas;
-    private PanelPlanes pnlPlanes;
+    private PanelClientes pnlBuscarClientes;
+    private PanelNuevoCliente pnlNuevoCliente;
+    private PanelVentas pnlVentaNueva;
+    private PanelPlanes pnlGestionPlanes;
+    private PanelReportes pnlReportes; // <--- Ahora sí está integrado
 
-    // Colores corporativos
     private final Color AZUL_ALTICE = new Color(0, 43, 92);
-    private final Color MAGENTA_ALTICE = new Color(225, 0, 110);
     private final Color GRIS_FONDO = new Color(240, 242, 245);
 
     public VentanaPrincipal(Usuario usuarioLogueado) {
         this.usuarioActual = usuarioLogueado;
-        this.logica = GestionSistema.getInstancia();
-
-        setTitle("Altice Sales System - Sesión: " + usuarioActual.getNombreCompleto());
+        setTitle("Altice Sales System - " + usuarioActual.getNombreCompleto());
         setSize(1280, 800);
-        setMinimumSize(new Dimension(1000, 700));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        
         setLayout(new BorderLayout());
 
         inicializarComponentes();
-        
-        // Mostrar el Dashboard por defecto al iniciar
         cardLayout.show(contenedorCentral, "dash");
     }
 
     private void inicializarComponentes() {
-        // 1. MENÚ LATERAL
+        // --- 1. MENÚ LATERAL ---
         menuLateral = new JPanel();
         menuLateral.setBackground(AZUL_ALTICE);
         menuLateral.setPreferredSize(new Dimension(280, 0));
         menuLateral.setLayout(new BorderLayout());
 
-        // Header del Menú (Logo)
         JLabel lblLogo = new JLabel("altice", SwingConstants.CENTER);
         lblLogo.setFont(new Font("Arial", Font.BOLD, 45));
         lblLogo.setForeground(Color.WHITE);
         lblLogo.setBorder(new EmptyBorder(40, 0, 40, 0));
         menuLateral.add(lblLogo, BorderLayout.NORTH);
 
-        // Cuerpo del Menú (Botones)
-        JPanel pnlBotones = new JPanel();
+        JPanel pnlBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 10));
         pnlBotones.setOpaque(false);
-        pnlBotones.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 15));
-
-        pnlBotones.add(crearBotonMenu("Dashboard", "dash"));
-
-        if (usuarioActual.puedeGestionarClientes()) {
-            pnlBotones.add(crearBotonMenu("Clientes (CRUD)", "cli"));
-        }
-
-        if (usuarioActual.puedeGestionarFacturacion()) {
-            pnlBotones.add(crearBotonMenu("Ventas y Facturas", "venta"));
-        }
-
-        if (usuarioActual.puedeGestionarServicios()) {
-            pnlBotones.add(crearBotonMenu("Planes / Servicios", "plan"));
-        }
+        pnlBotones.add(crearBotonMenu("Principal", "dash"));
+        pnlBotones.add(crearBotonMenu("Clientes", "sel_cli"));
+        pnlBotones.add(crearBotonMenu("Ventas y Facturas", "sel_venta"));
+        pnlBotones.add(crearBotonMenu("Planes / Servicios", "sel_plan"));
+        pnlBotones.add(crearBotonMenu("Reportes", "rep_periodo")); // Salto directo al panel de reportes
 
         menuLateral.add(pnlBotones, BorderLayout.CENTER);
 
-        // Footer del Menú (Info Usuario)
-        JPanel pnlUser = new JPanel(new GridLayout(2, 1));
-        pnlUser.setOpaque(false);
-        pnlUser.setBorder(new EmptyBorder(20, 20, 20, 20));
-        
-        JLabel name = new JLabel(usuarioActual.getNombreCompleto());
-        name.setForeground(Color.WHITE);
-        name.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        
-        JLabel rol = new JLabel("Rol: " + usuarioActual.getRol());
-        rol.setForeground(Color.LIGHT_GRAY);
-        rol.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        
-        pnlUser.add(name);
-        pnlUser.add(rol);
-        menuLateral.add(pnlUser, BorderLayout.SOUTH);
-
-        // 2. CONTENEDOR CENTRAL (CARDLAYOUT)
+        // --- 2. CONTENEDOR CENTRAL ---
         cardLayout = new CardLayout();
         contenedorCentral = new JPanel(cardLayout);
-        contenedorCentral.setBackground(GRIS_FONDO);
 
-        // Inicializar Paneles
+        // Instancias
         pnlDash = new PanelDashboard();
-        pnlClientes = new PanelClientes();
-        pnlVentas = new PanelVentas();
-        pnlPlanes = new PanelPlanes();
+        pnlBuscarClientes = new PanelClientes();
+        pnlNuevoCliente = new PanelNuevoCliente();
+        pnlVentaNueva = new PanelVentas(usuarioActual);
+        pnlGestionPlanes = new PanelPlanes();
+        pnlReportes = new PanelReportes(); // <--- Inicialización
 
-        // Agregar al CardLayout
+        // Paneles de Selección (Submenús)
+        contenedorCentral.add(crearPanelSeleccion("Gestión de Clientes", 
+            new String[]{"Ingresar Cliente Nuevo", "Buscar Cliente Existente"}, 
+            new String[]{"nuevo_cli", "buscar_cli"}), "sel_cli");
+            
+        contenedorCentral.add(crearPanelSeleccion("Ventas y Facturación", 
+            new String[]{"Realizar Factura", "Historial de Facturas"}, 
+            new String[]{"nueva_fact", "rep_periodo"}), "sel_venta"); // El historial ahora apunta al reporte
+
+        // Agregar Paneles de Trabajo Finales
         contenedorCentral.add(pnlDash, "dash");
-        contenedorCentral.add(pnlClientes, "cli");
-        contenedorCentral.add(pnlVentas, "venta");
-        contenedorCentral.add(pnlPlanes, "plan");
+        contenedorCentral.add(pnlNuevoCliente, "nuevo_cli");
+        contenedorCentral.add(pnlBuscarClientes, "buscar_cli");
+        contenedorCentral.add(pnlVentaNueva, "nueva_fact");
+        contenedorCentral.add(pnlGestionPlanes, "nuevo_plan");
+        contenedorCentral.add(pnlReportes, "rep_periodo"); // <--- Agregado al CardLayout
 
-        // Agregar todo a la ventana
         add(menuLateral, BorderLayout.WEST);
         add(contenedorCentral, BorderLayout.CENTER);
     }
 
+    private JPanel crearPanelSeleccion(String titulo, String[] opciones, String[] comandos) {
+        JPanel pnl = new JPanel(new BorderLayout());
+        pnl.setBackground(GRIS_FONDO);
+        JLabel lbl = new JLabel(titulo);
+        lbl.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        lbl.setBorder(new EmptyBorder(30, 40, 20, 0));
+        pnl.add(lbl, BorderLayout.NORTH);
+
+        JPanel cuerpo = new JPanel(new FlowLayout(FlowLayout.LEFT, 40, 40));
+        cuerpo.setOpaque(false);
+        for (int i = 0; i < opciones.length; i++) {
+            JButton btn = new JButton(opciones[i]);
+            btn.setPreferredSize(new Dimension(300, 180));
+            btn.setFont(new Font("Segoe UI", Font.BOLD, 16));
+            btn.setBackground(Color.WHITE);
+            btn.setFocusPainted(false);
+            
+            final String cmd = comandos[i];
+            btn.addActionListener(e -> {
+                // Lógica de sincronización antes de cambiar
+                if (cmd.equals("nueva_fact")) pnlVentaNueva.refrescarCombos(); 
+                if (cmd.equals("buscar_cli")) pnlBuscarClientes.actualizarTabla(""); 
+                if (cmd.equals("rep_periodo")) pnlReportes.filtrarPorPeriodo(); // Carga datos al entrar
+                
+                cardLayout.show(contenedorCentral, cmd);
+            });
+            cuerpo.add(btn);
+        }
+        pnl.add(cuerpo, BorderLayout.CENTER);
+        return pnl;
+    }
+
     private JButton crearBotonMenu(String texto, String comando) {
         JButton btn = new JButton(texto);
-        btn.setPreferredSize(new Dimension(250, 50));
+        btn.setPreferredSize(new Dimension(250, 45));
         btn.setBackground(AZUL_ALTICE);
-        btn.setForeground(Color.black);
-        btn.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        btn.setFocusPainted(false);
-        btn.setBorder(new EmptyBorder(0, 25, 0, 0));
+        btn.setForeground(Color.WHITE);
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btn.setHorizontalAlignment(SwingConstants.LEFT);
+        btn.setBorder(new EmptyBorder(0, 20, 0, 0));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-        // Eventos
         btn.addActionListener(e -> {
-            // Acción especial antes de mostrar el panel
-            if (comando.equals("dash")) pnlDash.refrescarEstadisticas();
-            if (comando.equals("cli")) pnlClientes.actualizarTabla();
-            
+            // Si desde el menú lateral vas a reportes, refresca los datos automáticamente
+            if (comando.equals("rep_periodo")) {
+                pnlReportes.filtrarPorPeriodo();
+            }
             cardLayout.show(contenedorCentral, comando);
-            
-            // Forzar actualización visual
-            contenedorCentral.revalidate();
-            contenedorCentral.repaint();
         });
-
-        // Efecto Hover
-        btn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn.setBackground(new Color(0, 65, 140));
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btn.setBackground(AZUL_ALTICE);
-            }
-        });
-
         return btn;
     }
 }

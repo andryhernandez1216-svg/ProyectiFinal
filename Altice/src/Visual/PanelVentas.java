@@ -1,67 +1,83 @@
 package Visual;
 
-
 import Ligca.*;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Date;
 
 public class PanelVentas extends JPanel {
-    private JComboBox<Cliente> cbClientes;
-    private JComboBox<Plan> cbPlanes;
+
+    private JComboBox<Cliente> cbCliente;
+    private JComboBox<Plan> cbPlan;
     private JTextArea areaFactura;
+    private Usuario usuarioActual;
 
-    public PanelVentas() {
-        setLayout(new GridBagLayout());
-        setBackground(Color.WHITE);
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5,5,5,5);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+    public PanelVentas(Usuario user) {
+        this.usuarioActual = user;
+        setLayout(new BorderLayout(10, 10));
 
-        cbClientes = new JComboBox<>();
-        cbPlanes = new JComboBox<>();
-        areaFactura = new JTextArea(10, 30);
+        // Paneles de selección
+        JPanel pnlNorte = new JPanel(new GridLayout(2, 2, 5, 5));
+        cbCliente = new JComboBox<>();
+        cbPlan = new JComboBox<>();
+
+        pnlNorte.add(new JLabel("Cliente:"));
+        pnlNorte.add(cbCliente);
+        pnlNorte.add(new JLabel("Plan:"));
+        pnlNorte.add(cbPlan);
+
+        JButton btnVenta = new JButton("Generar Factura");
+        btnVenta.addActionListener(e -> procesarVenta());
+
+        areaFactura = new JTextArea();
         areaFactura.setEditable(false);
 
-        // Cargar datos desde la instancia global
-        for(Cliente c : GestionSistema.getInstancia().getClientes()) cbClientes.addItem(c);
-        for(Plan p : GestionSistema.getInstancia().getPlanes()) cbPlanes.addItem(p);
+        // Layout
+        JPanel contenedorSuperior = new JPanel(new BorderLayout());
+        contenedorSuperior.add(pnlNorte, BorderLayout.CENTER);
+        contenedorSuperior.add(btnVenta, BorderLayout.SOUTH);
 
-        gbc.gridx = 0; gbc.gridy = 0; add(new JLabel("Cliente:"), gbc);
-        gbc.gridx = 1; add(cbClientes, gbc);
+        add(contenedorSuperior, BorderLayout.NORTH);
+        add(new JScrollPane(areaFactura), BorderLayout.CENTER);
+    }
+
+    // Este es el método que la VentanaPrincipal llama para actualizar la lista
+    public void refrescarCombos() {
+        cbCliente.removeAllItems();
+        cbPlan.removeAllItems();
         
-        gbc.gridx = 0; gbc.gridy = 1; add(new JLabel("Plan:"), gbc);
-        gbc.gridx = 1; add(cbPlanes, gbc);
+        // Llenamos los combos con los objetos reales
+        for (Cliente c : GestionSistema.getInstancia().getClientes()) {
+            cbCliente.addItem(c); 
+        }
+        for (Plan p : GestionSistema.getInstancia().getPlanes()) {
+            cbPlan.addItem(p);
+        }
+    }
 
-        JButton btnGenerar = new JButton("Generar Factura");
-        btnGenerar.addActionListener(e -> {
+    private void procesarVenta() {
+        Cliente c = (Cliente) cbCliente.getSelectedItem();
+        Plan p = (Plan) cbPlan.getSelectedItem();
+
+        if (c != null && p != null) {
             try {
-                Cliente c = (Cliente) cbClientes.getSelectedItem();
-                Plan p = (Plan) cbPlanes.getSelectedItem();
+                // Crear factura y detalle (con tus 4 argumentos)
+                Factura f = new Factura("FAC-" + System.currentTimeMillis(), c, null, new Date());
+                DetalleFactura det = new DetalleFactura("DET-01", p.getNombre(), 1, p.getPrecio());
+                f.agregarDetalle(det);
                 
-                // 1. Crear Contrato (según tu lógica)
-                Contrato contra = new Contrato("CON-"+System.currentTimeMillis(), c, p, new Date(), new Date(System.currentTimeMillis()+31536000000L), true);
+                GestionSistema.getInstancia().agregarFactura(f);
                 
-                // 2. Crear Factura
-                Factura fact = new Factura("FAC-"+System.currentTimeMillis(), c, contra, new Date());
+                // Mostrar resultado simple
+                areaFactura.setText("FACTURA GENERADA\n" +
+                                   "Cliente: " + c.toString() + "\n" +
+                                   "Plan: " + p.getNombre() + "\n" +
+                                   "Total: RD$ " + f.getMontoTotal());
                 
-                // 3. Agregar detalle (el plan)
-                DetalleFactura detalle = new DetalleFactura("D01", p.getNombre(), 1, p.getPrecio());
-                fact.agregarDetalle(detalle);
-                
-                areaFactura.setText(fact.toString() + "\nDetalles:\n" + detalle.toString());
-                
-                // Registrar en el sistema
-                GestionSistema.getInstancia().agregarContrato(contra);
-                
+                JOptionPane.showMessageDialog(this, "Venta realizada");
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage());
+                JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
             }
-        });
-
-        gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 2;
-        add(btnGenerar, gbc);
-        gbc.gridy = 3;
-        add(new JScrollPane(areaFactura), gbc);
+        }
     }
 }

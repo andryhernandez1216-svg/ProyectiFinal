@@ -12,11 +12,11 @@ public abstract class Persona {
     private String email;
     private String direccion;
     private Date fechaRegistro;
+    private static int contadorId = 1; // Variable estática para autoincremento
 
-    public Persona(String id, String cedula, String nombre, String apellido,
+    public Persona(String cedula, String nombre, String apellido,
                    String telefono, String email, String direccion, Date fechaRegistro) {
         try {
-            setId(id);
             setCedula(cedula);
             setNombre(nombre);
             setApellido(apellido);
@@ -24,6 +24,7 @@ public abstract class Persona {
             setEmail(email);
             setDireccion(direccion);
             setFechaRegistro(fechaRegistro);
+            this.id = String.valueOf(contadorId++);
         } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -33,11 +34,6 @@ public abstract class Persona {
         return id;
     }
 
-    public void setId(String id) throws Exception {
-        if (id == null || id.trim().isEmpty())
-            throw new Exception("El id no puede estar vacio.");
-        this.id = id;
-    }
 
     public String getCedula() {
         return cedula;

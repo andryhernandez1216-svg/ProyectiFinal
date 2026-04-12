@@ -67,11 +67,11 @@ public class Empleado extends Persona {
         this.activo = activo;
     }
 
-    public Empleado(String id, String cedula, String nombre, String apellido, String telefono, String email,
+    public Empleado(String cedula, String nombre, String apellido, String telefono, String email,
                     String direccion, Date fechaRegistro, String codigo, float salario, Date fechaIngreso,
                     String estado, float comisiones, boolean activo) {
 
-        super(id, cedula, nombre, apellido, telefono, email, direccion, fechaRegistro);
+        super(cedula, nombre, apellido, telefono, email, direccion, fechaRegistro);
         try {
             setCodigo(codigo);
             setSalario(salario);

@@ -85,7 +85,7 @@ public class VentanaLogin extends JFrame {
         if (user.equals("admin") && pass.equals("1234")) {
             // Creamos el objeto Usuario según tu constructor de Usuario.java
             Usuario u = new Usuario(
-                "U001", "402-1234567-8", "Admin", "Altice", 
+                "402-1234567-8", "Admin", "Altice", 
                 "809-555-5555", "admin@altice.com.do", "Av. Churchill", 
                 new Date(), "ADMINISTRATIVO"
             );
@@ -95,7 +95,7 @@ public class VentanaLogin extends JFrame {
             this.dispose(); // Cerramos el login
         } else if (user.equals("comercial") && pass.equals("1234")) {
             Usuario u = new Usuario(
-                "U002", "402-9876543-2", "Vendedor", "Comercial", 
+                "402-9876543-2", "Vendedor", "Comercial", 
                 "809-444-4444", "ventas@altice.com.do", "Sambil", 
                 new Date(), "COMERCIAL"
             );

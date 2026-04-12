@@ -51,10 +51,10 @@ public class Cliente extends Persona {
 			throw new Exception("La cantidad de pagos atrasados no puede ser negativa.");
 		this.cantDePagosAtrasados = cantPagosAtrasados;
 	}
-	public Cliente(String id, String cedula, String nombre, String apellido, String telefono, String email,
+	public Cliente( String cedula, String nombre, String apellido, String telefono, String email,
 			String direccion, Date fechaRegistro, String codigoCliente, String tipoCliente, boolean estado, float deuda,
 			int cantDePagosAtrasados) {
-		super(id, cedula, nombre, apellido, telefono, email, direccion, fechaRegistro);
+		super(cedula, nombre, apellido, telefono, email, direccion, fechaRegistro);
 		try {
 			setCodigoCliente(codigoCliente);
 			setDeuda(deuda);
@@ -103,10 +103,8 @@ public class Cliente extends Persona {
 	
 	@Override
 	public String toString() {
-	    return "Cliente: " + getNombre() + " " + getApellido() +
-	           " | Código: " + codigoCliente +
-	           " | Estado: " + (estado ? "Activo" : "Inactivo") +
-	           " | Deuda: RD$" + deuda;
+	    // Esto es lo que verá el usuario en el ComboBox
+	    return getNombre() + " " + getApellido();
 	}
 
 }

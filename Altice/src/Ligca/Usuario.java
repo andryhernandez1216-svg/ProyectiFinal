@@ -22,9 +22,9 @@ public class Usuario extends Persona {
         this.rol = rol.toUpperCase();
     }
 
-    public Usuario(String id, String cedula, String nombre, String apellido, String telefono, String email,
+    public Usuario(String cedula, String nombre, String apellido, String telefono, String email,
                    String direccion, Date fechaRegistro, String rol) {
-        super(id, cedula, nombre, apellido, telefono, email, direccion, fechaRegistro);
+        super(cedula, nombre, apellido, telefono, email, direccion, fechaRegistro);
         try {
             setRol(rol);
         } catch (Exception e) {
