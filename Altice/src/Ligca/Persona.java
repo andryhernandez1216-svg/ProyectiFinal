@@ -1,9 +1,11 @@
 package Ligca;
 
+import java.io.Serializable; // Agregado
 import java.util.Date;
 
-public abstract class Persona {
+public abstract class Persona implements Serializable { // Agregado Serializable
 
+    private static final long serialVersionUID = 1L; // Agregado para compatibilidad
     private String id;
     private String cedula;
     private String nombre;
@@ -12,7 +14,11 @@ public abstract class Persona {
     private String email;
     private String direccion;
     private Date fechaRegistro;
-    private static int contadorId = 1; // Variable estática para autoincremento
+    private static int contadorId = 1;
+
+    // --- AGREGADO: Constructor vacío para corregir el error de la consola ---
+    public Persona() {
+    }
 
     public Persona(String cedula, String nombre, String apellido,
                    String telefono, String email, String direccion, Date fechaRegistro) {
