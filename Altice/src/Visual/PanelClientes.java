@@ -6,6 +6,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 public class PanelClientes extends JPanel {
     private JTable tabla;
@@ -17,41 +18,55 @@ public class PanelClientes extends JPanel {
         setBackground(Color.WHITE);
 
         txtBuscar = new JTextField();
-        txtBuscar.setBorder(BorderFactory.createTitledBorder("Buscar por nombre, cédula o código..."));
+        txtBuscar.setBorder(BorderFactory.createTitledBorder("Buscar por nombre o cédula..."));
         
-        // Filtro en tiempo real
         txtBuscar.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
                 actualizarTabla(txtBuscar.getText());
             }
         });
 
-        modelo = new DefaultTableModel(new String[]{"ID", "Cédula", "Nombre", "Código", "Deuda"}, 0);
+        modelo = new DefaultTableModel(new String[]{"Cédula", "Nombre", "Código", "Deuda", "Estado"}, 0);
         tabla = new JTable(modelo);
 
         add(txtBuscar, BorderLayout.NORTH);
         add(new JScrollPane(tabla), BorderLayout.CENTER);
 
-        actualizarTabla(""); // Carga inicial automática
+        actualizarTabla(""); 
     }
 
-
     public void actualizarTabla(String filtro) {
-        modelo.setRowCount(0);
-        // IMPORTANTE: Usar la instancia única
-        for (Cliente c : GestionSistema.getInstancia().getClientes()) {
-            String busqueda = (c.getNombre() + " " + c.getApellido() + " " + c.getCedula()).toLowerCase();
+        new Thread(() -> {
+            // CAMBIO IMPORTANTE: "clientes" en minúsculas para coincidir con el servidor
+            ArrayList<Cliente> listaServidor = SocketCliente.recibirDatos("clientes");
             
-            if (busqueda.contains(filtro.toLowerCase())) {
-                modelo.addRow(new Object[]{
-                    c.getId(),               // El ID autogenerado estático
-                    c.getCedula(),
-                    c.getNombreCompleto(),   // Método de Persona
-                    c.getCodigoCliente(),
-                    "RD$ " + c.getDeuda(),
-                    c.isEstado() ? "Activo" : "Inactivo"
-                });
-            }
-        }
+            SwingUtilities.invokeLater(() -> {
+                // Validar que la lista no sea nula para evitar errores
+                if (listaServidor == null) return;
+
+                modelo.setRowCount(0);
+                for (Cliente c : listaServidor) {
+                    // Validación para evitar NullPointerException al buscar
+                    String nombre = (c.getNombre() != null) ? c.getNombre() : "";
+                    String apellido = (c.getApellido() != null) ? c.getApellido() : "";
+                    String cedula = (c.getCedula() != null) ? c.getCedula() : "";
+                    
+                    String busqueda = (nombre + " " + apellido + " " + cedula).toLowerCase();
+                    
+                    if (busqueda.contains(filtro.toLowerCase())) {
+                        modelo.addRow(new Object[]{
+                            cedula,
+                            nombre + " " + apellido,
+                            c.getCodigoCliente(),
+                            "RD$ " + String.format("%.2f", c.getDeuda()),
+                            c.isEstado() ? "Activo" : "Inactivo"
+                        });
+                    }
+                }
+                // Notificar a la tabla que los datos cambiaron
+                tabla.revalidate();
+                tabla.repaint();
+            });
+        }).start();
     }
 }

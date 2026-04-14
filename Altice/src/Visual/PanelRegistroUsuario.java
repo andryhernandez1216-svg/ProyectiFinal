@@ -2,7 +2,6 @@ package Visual;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import Ligca.Usuario;
@@ -21,7 +20,6 @@ public class PanelRegistroUsuario extends JPanel {
         titulo.setBounds(50, 30, 400, 30);
         add(titulo);
 
-        // Campos básicos (puedes añadir más según tu constructor)
         txtCed = crearCampo("Cédula:", 100);
         txtNom = crearCampo("Nombre:", 170);
         txtApe = crearCampo("Apellido:", 240);
@@ -56,61 +54,42 @@ public class PanelRegistroUsuario extends JPanel {
     }
 
     private void guardarNuevoUsuario() {
-        // Validar que no haya campos vacíos
-        if(txtCed.getText().isEmpty() || txtNom.getText().isEmpty() || txtPass.getText().isEmpty()){
-            JOptionPane.showMessageDialog(this, "La cédula, nombre y contraseña son obligatorios.");
+        // 1. Validaciones normales (esto es rápido)
+        if(txtCed.getText().isEmpty() || txtNom.getText().isEmpty()){
             return;
         }
 
-        try {
-            // Creamos el objeto con trims para asegurar limpieza
-            Usuario nuevo = new Usuario(
-                txtCed.getText().trim(), 
-                txtNom.getText().trim(), 
-                txtApe.getText().trim(),
-                "809-000-0000", 
-                "empleado@altice.do", 
-                "Sede", 
-                new Date(), 
-                cbRol.getSelectedItem().toString(),
-                txtPass.getText().trim()
-            );
+        // 2. Ejecutar la red en un hilo separado para que NO se frise
+        new Thread(() -> {
+            try {
+                Usuario nuevo = new Usuario(
+                    txtCed.getText().trim(), txtNom.getText().trim(), 
+                    txtApe.getText().trim(), "809-000-0000", 
+                    "empleado@altice.do", "Sede", new Date(), 
+                    cbRol.getSelectedItem().toString(), txtPass.getText().trim()
+                );
 
-            // Cargar lista actual, añadir y sobrescribir
-            ArrayList<Usuario> lista = cargarUsuarios();
-            lista.add(nuevo);
-            
-            File archivo = new File("usuarios.dat");
-            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(archivo))) {
-                oos.writeObject(lista);
+                // Esto es lo que tardaba y frisaba la pantalla
+                ArrayList<Usuario> lista = SocketCliente.recibirDatos("USUARIOS");
+                lista.add(nuevo);
+                boolean exito = SocketCliente.enviarDatos("USUARIOS", lista);
+
+                // 3. Volver al hilo de la interfaz para mostrar el mensaje
+                SwingUtilities.invokeLater(() -> {
+                    if (exito) {
+                        JOptionPane.showMessageDialog(this, "¡Sincronizado con éxito!");
+                        limpiarCampos();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Error: Servidor no disponible.");
+                    }
+                });
+
+            } catch (Exception ex) {
+                SwingUtilities.invokeLater(() -> 
+                    JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage()));
             }
-
-            JOptionPane.showMessageDialog(this, "¡Usuario " + nuevo.getNombre() + " registrado con éxito!");
-            limpiarCampos();
-            
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Error al guardar: " + ex.getMessage());
-            ex.printStackTrace();
-        }
+        }).start(); // ¡Importante! Aquí arranca el hilo separado
     }
-
-    public static ArrayList<Usuario> cargarUsuarios() {
-        File archivo = new File("usuarios.dat");
-        if (!archivo.exists() || archivo.length() == 0) return new ArrayList<>();
-        
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(archivo))) {
-            Object data = ois.readObject();
-            if (data instanceof ArrayList) {
-                return (ArrayList<Usuario>) data;
-            }
-            return new ArrayList<>();
-        } catch (Exception e) {
-            System.err.println("Error al cargar usuarios: " + e.getMessage());
-            return new ArrayList<>();
-        }
-    }
-
-    
 
     private void limpiarCampos() {
         txtNom.setText(""); txtApe.setText(""); txtCed.setText(""); txtPass.setText("");

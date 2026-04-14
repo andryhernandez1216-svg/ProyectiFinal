@@ -1,7 +1,10 @@
 package Ligca;
 
-public class DetalleFactura {
+import java.io.Serializable; 
 
+public class DetalleFactura implements Serializable {
+    private static final long serialVersionUID = 1L; 
+    
     private String idDetalle;
     private String descripcion;
     private int cantidad;

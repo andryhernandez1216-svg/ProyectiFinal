@@ -46,7 +46,7 @@ public class VentanaLogin extends JFrame {
 
         panelPrincipal.add(lblLogo);
         panelPrincipal.add(Box.createRigidArea(new Dimension(0, 50)));
-        panelPrincipal.add(crearEtiqueta("USUARIO:"));
+        panelPrincipal.add(crearEtiqueta("USUARIO (CÉDULA O NOMBRE):"));
         panelPrincipal.add(txtUser);
         panelPrincipal.add(Box.createRigidArea(new Dimension(0, 20)));
         panelPrincipal.add(crearEtiqueta("CONTRASEÑA:"));
@@ -66,53 +66,43 @@ public class VentanaLogin extends JFrame {
     }
 
     private void validarAcceso() {
-        String userIngresado = txtUser.getText().trim();
-        String passIngresada = new String(txtPass.getPassword()).trim();
+        String user = txtUser.getText().trim();
+        String pass = new String(txtPass.getPassword()).trim();
 
-        if (userIngresado.isEmpty() || passIngresada.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos.");
-            return;
+        // PRIORIDAD 1: Admin Maestro (Hardcoded)
+        if (user.equals("admin") && pass.equals("1234")) {
+            Usuario adminMaestro = new Usuario("000", "Admin", "Maestro", "000", "a@a.com", "Sede", new Date(), "ADMINISTRATIVO", "1234");
+            new VentanaPrincipal(adminMaestro).setVisible(true);
+            this.dispose();
+            return; // Salimos para no buscar en el servidor
         }
 
-        try {
-            Usuario u = null;
+        // PRIORIDAD 2: Buscar en el Servidor (Solo si no es el admin local)
+        new Thread(() -> {
+            try {
+                ArrayList<Usuario> registrados = SocketCliente.recibirDatos("USUARIOS");
+                Usuario encontrado = null;
 
-            // 1. Admin Maestro (Hardcoded)
-            if (userIngresado.equals("admin") && passIngresada.equals("1234")) {
-                u = new Usuario("000", "Admin", "Maestro", "000", "a@a.com", "Sede", new Date(), "ADMINISTRATIVO", "1234");
-            } 
-            
-            // 2. Buscar en archivo .dat
-            if (u == null) {
-                ArrayList<Usuario> registrados = PanelRegistroUsuario.cargarUsuarios();
-                
-                for (Usuario reg : registrados) {
-                    // Comparamos Cédula o Nombre con el usuario ingresado
-                    // Es mejor usar la cédula para evitar ambigüedades
-                    if ((reg.getCedula().equals(userIngresado) || reg.getNombre().equalsIgnoreCase(userIngresado)) && 
-                        reg.getPassword().equals(passIngresada)) {
-                        u = reg;
+                for (Usuario u : registrados) {
+                    if (u.getCedula().equals(user) && u.getPassword().equals(pass)) {
+                        encontrado = u;
                         break;
                     }
                 }
+
+                final Usuario uFinal = encontrado;
+                SwingUtilities.invokeLater(() -> {
+                    if (uFinal != null) {
+                        new VentanaPrincipal(uFinal).setVisible(true);
+                        this.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Credenciales incorrectas o servidor no disponible.");
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            if (u != null) {
-                new VentanaPrincipal(u).setVisible(true);
-                this.dispose();
-            } else {
-                JOptionPane.showMessageDialog(this, "Usuario (Cédula) o contraseña incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Error de sistema: " + ex.getMessage());
-        }
-    }
-
-
-    private void abrirSistema(Usuario u) {
-        new VentanaPrincipal(u).setVisible(true);
-        this.dispose();
+        }).start();
     }
 
     public static void main(String[] args) {

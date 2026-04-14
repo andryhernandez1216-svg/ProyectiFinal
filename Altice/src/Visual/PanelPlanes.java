@@ -4,12 +4,12 @@ import Ligca.Plan;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class PanelPlanes extends JPanel {
     private JPanel contenedorCartas;
     private CardLayout cardInterno;
     
-    // Componentes del formulario
     private JTextField txtNombre, txtPrecio, txtVelocidad;
     private String tipoSeleccionado = "";
 
@@ -20,14 +20,10 @@ public class PanelPlanes extends JPanel {
         cardInterno = new CardLayout();
         contenedorCartas = new JPanel(cardInterno);
         
-        // 1. Pantalla de Selección de Tipo
         contenedorCartas.add(crearPantallaSeleccionTipo(), "seleccion");
-        
-        // 2. Pantalla de Formulario
         contenedorCartas.add(crearPantallaFormulario(), "formulario");
 
         add(contenedorCartas, BorderLayout.CENTER);
-        
     }
 
     private JPanel crearPantallaSeleccionTipo() {
@@ -51,8 +47,7 @@ public class PanelPlanes extends JPanel {
         
         btn.addActionListener(e -> {
             this.tipoSeleccionado = tipo;
-            // Ajustar campos según el tipo si es necesario
-            if(tipo.equals("TV")) txtVelocidad.setText("N/A (Canales)");
+            if(tipo.equals("TV")) txtVelocidad.setText("Canales");
             else txtVelocidad.setText("");
             
             cardInterno.show(contenedorCartas, "formulario");
@@ -80,7 +75,7 @@ public class PanelPlanes extends JPanel {
         gbc.gridx = 0; gbc.gridy = 2; pnl.add(new JLabel("Velocidad / Descripción:"), gbc);
         gbc.gridx = 1; pnl.add(txtVelocidad, gbc);
 
-        JButton btnGuardar = new JButton("Guardar Plan");
+        JButton btnGuardar = new JButton("Guardar Plan en Servidor");
         btnGuardar.setBackground(new Color(0, 43, 92));
         btnGuardar.setForeground(Color.WHITE);
         btnGuardar.addActionListener(e -> guardar());
@@ -94,22 +89,37 @@ public class PanelPlanes extends JPanel {
         return pnl;
     }
     
-
     private void guardar() {
-        try {
-            Plan p = new Plan(
-                "PLN-" + System.currentTimeMillis(), 
-                txtNombre.getText(), 
-                "Servicio " + tipoSeleccionado,
-                txtVelocidad.getText(), 
-                Float.parseFloat(txtPrecio.getText()), 
-                tipoSeleccionado, 12, true
-            );
-            GestionSistema.getInstancia().agregarPlan(p);
-            JOptionPane.showMessageDialog(this, "Plan de " + tipoSeleccionado + " guardado.");
-            cardInterno.show(contenedorCartas, "seleccion");
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Error en los datos.");
-        }
+        new Thread(() -> {
+            try {
+                Plan p = new Plan(
+                    "PLN-" + System.currentTimeMillis(), 
+                    txtNombre.getText().trim(), 
+                    "Servicio " + tipoSeleccionado,
+                    txtVelocidad.getText().trim(), 
+                    Float.parseFloat(txtPrecio.getText().trim()), 
+                    tipoSeleccionado, 12, true
+                );
+
+                // Se descarga, se añade y se envía para sobreescribir el archivo .dat
+                ArrayList<Plan> listaActual = SocketCliente.recibirDatos("PLANES");
+                listaActual.add(p);
+                SocketCliente.enviarDatos("PLANES", listaActual); 
+
+                SwingUtilities.invokeLater(() -> {
+                    JOptionPane.showMessageDialog(this, "Plan guardado permanentemente en el servidor.");
+                    limpiarCampos();
+                    cardInterno.show(contenedorCartas, "seleccion");
+                });
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }).start();
+    }
+
+    private void limpiarCampos() {
+        txtNombre.setText("");
+        txtPrecio.setText("");
+        txtVelocidad.setText("");
     }
 }

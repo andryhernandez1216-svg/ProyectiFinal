@@ -11,7 +11,6 @@ public class VentanaPrincipal extends JFrame {
     private CardLayout cardLayout;
     private Usuario usuarioActual;
 
-    // Paneles Funcionales
     private PanelDashboard pnlDash;
     private PanelClientes pnlBuscarClientes;
     private PanelNuevoCliente pnlNuevoCliente;
@@ -26,11 +25,10 @@ public class VentanaPrincipal extends JFrame {
     public VentanaPrincipal(Usuario usuarioLogueado) {
         this.usuarioActual = usuarioLogueado;
         
-        // Verificamos que el usuario no sea nulo para evitar NullPointerException
         String nombreCompleto = (usuarioActual != null) ? 
                                 usuarioActual.getNombre() + " " + usuarioActual.getApellido() : "Invitado";
         
-        setTitle("Altice Sales System - " + nombreCompleto);
+        setTitle("Altice Sales System - " + nombreCompleto + " [" + usuarioActual.getRol() + "]");
         setSize(1280, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -38,8 +36,13 @@ public class VentanaPrincipal extends JFrame {
 
         inicializarComponentes();
         
-        // Ir a la pantalla principal al iniciar
-        cardLayout.show(contenedorCentral, "dash");
+        // --- REDIRECCIÓN INICIAL SEGÚN ROL ---
+        // Si no es admin, no puede entrar al dashboard, lo mandamos a clientes.
+        if (usuarioActual.esAdministrativo()) {
+            cardLayout.show(contenedorCentral, "dash");
+        } else {
+            cardLayout.show(contenedorCentral, "sel_cli");
+        }
     }
 
     private void inicializarComponentes() {
@@ -55,24 +58,37 @@ public class VentanaPrincipal extends JFrame {
         lblLogo.setBorder(new EmptyBorder(40, 0, 40, 0));
         menuLateral.add(lblLogo, BorderLayout.NORTH);
 
-        // Cambiamos a un Layout que apile verticalmente mejor
         JPanel pnlBotones = new JPanel();
         pnlBotones.setLayout(new BoxLayout(pnlBotones, BoxLayout.Y_AXIS));
         pnlBotones.setOpaque(false);
         pnlBotones.setBorder(new EmptyBorder(0, 15, 0, 15));
 
-        pnlBotones.add(crearBotonMenu("Principal", "dash"));
-        pnlBotones.add(Box.createRigidArea(new Dimension(0, 10)));
+        // --- FILTRADO DE BOTONES DEL MENÚ ---
+        String rol = usuarioActual.getRol().toUpperCase();
+
+        // PRINCIPAL (Dashboard): Solo Administrativo
+        if (rol.equals("ADMINISTRATIVO")) {
+            pnlBotones.add(crearBotonMenu("Principal", "dash"));
+            pnlBotones.add(Box.createRigidArea(new Dimension(0, 10)));
+        }
+
+        // CLIENTES: Todos
         pnlBotones.add(crearBotonMenu("Clientes", "sel_cli"));
         pnlBotones.add(Box.createRigidArea(new Dimension(0, 10)));
+
+        // VENTAS Y FACTURAS: Todos
         pnlBotones.add(crearBotonMenu("Ventas y Facturas", "sel_venta"));
         pnlBotones.add(Box.createRigidArea(new Dimension(0, 10)));
-        pnlBotones.add(crearBotonMenu("Planes / Servicios", "nuevo_plan"));
-        pnlBotones.add(Box.createRigidArea(new Dimension(0, 10)));
-        pnlBotones.add(crearBotonMenu("Reportes", "rep_periodo"));
 
-        // Solo el administrador puede ver el botón de registro
-        if (usuarioActual != null && usuarioActual.esAdministrativo()) {
+        // PLANES Y REPORTES: Administrativo y Trabajador
+        if (rol.equals("ADMINISTRATIVO") || rol.equals("TRABAJADOR")) {
+            pnlBotones.add(crearBotonMenu("Planes / Servicios", "nuevo_plan"));
+            pnlBotones.add(Box.createRigidArea(new Dimension(0, 10)));
+            pnlBotones.add(crearBotonMenu("Reportes", "rep_periodo"));
+        }
+
+        // REGISTRAR USUARIO: Solo Administrativo
+        if (rol.equals("ADMINISTRATIVO")) {
             pnlBotones.add(Box.createRigidArea(new Dimension(0, 10)));
             pnlBotones.add(crearBotonMenu("Registrar Usuario", "reg_user"));
         }
@@ -83,15 +99,12 @@ public class VentanaPrincipal extends JFrame {
         cardLayout = new CardLayout();
         contenedorCentral = new JPanel(cardLayout);
 
-        // Instancias de Paneles (Asegúrate de que estas clases existan en tu paquete Visual)
-        pnlDash = new PanelDashboard();
+        // Instancias básicas
         pnlBuscarClientes = new PanelClientes();
         pnlNuevoCliente = new PanelNuevoCliente();
         pnlVentaNueva = new PanelVentas(usuarioActual);
-        pnlGestionPlanes = new PanelPlanes();
-        pnlReportes = new PanelReportes();
 
-        // Paneles de Selección (Submenús)
+        // Submenús (Ventas y Clientes disponibles para todos)
         contenedorCentral.add(crearPanelSeleccion("Gestión de Clientes", 
             new String[]{"Ingresar Cliente Nuevo", "Buscar Cliente Existente"}, 
             new String[]{"nuevo_cli", "buscar_cli"}), "sel_cli");
@@ -100,17 +113,24 @@ public class VentanaPrincipal extends JFrame {
             new String[]{"Realizar Factura", "Historial de Facturas"}, 
             new String[]{"nueva_fact", "rep_periodo"}), "sel_venta");
 
-        // Agregar Paneles de Trabajo Finales al CardLayout
-        contenedorCentral.add(pnlDash, "dash");
+        // Paneles condicionales
         contenedorCentral.add(pnlNuevoCliente, "nuevo_cli");
         contenedorCentral.add(pnlBuscarClientes, "buscar_cli");
         contenedorCentral.add(pnlVentaNueva, "nueva_fact");
-        contenedorCentral.add(pnlGestionPlanes, "nuevo_plan");
-        contenedorCentral.add(pnlReportes, "rep_periodo");
 
-        // Instanciar panel de registro solo si es admin
-        if (usuarioActual != null && usuarioActual.esAdministrativo()) {
+        // Paneles de Trabajador / Admin
+        if (rol.equals("ADMINISTRATIVO") || rol.equals("TRABAJADOR")) {
+            pnlGestionPlanes = new PanelPlanes();
+            pnlReportes = new PanelReportes();
+            contenedorCentral.add(pnlGestionPlanes, "nuevo_plan");
+            contenedorCentral.add(pnlReportes, "rep_periodo");
+        }
+
+        // Paneles exclusivos de Admin
+        if (rol.equals("ADMINISTRATIVO")) {
+            pnlDash = new PanelDashboard();
             pnlRegistro = new PanelRegistroUsuario();
+            contenedorCentral.add(pnlDash, "dash");
             contenedorCentral.add(pnlRegistro, "reg_user");
         }
 
@@ -129,14 +149,29 @@ public class VentanaPrincipal extends JFrame {
         JPanel cuerpo = new JPanel(new FlowLayout(FlowLayout.LEFT, 40, 40));
         cuerpo.setOpaque(false);
         for (int i = 0; i < opciones.length; i++) {
+            final String cmd = comandos[i];
+            
+            // --- VALIDACIÓN DE SUBMENÚ SEGÚN ROL ---
+            // Si el comando es reportes y el usuario es comercial, no creamos este botón
+            if (cmd.equals("rep_periodo") && usuarioActual.getRol().equalsIgnoreCase("COMERCIAL")) {
+                continue; 
+            }
+
             JButton btn = new JButton(opciones[i]);
             btn.setPreferredSize(new Dimension(300, 180));
             btn.setFont(new Font("Segoe UI", Font.BOLD, 16));
             btn.setBackground(Color.WHITE);
             btn.setFocusPainted(false);
             
-            final String cmd = comandos[i];
-            btn.addActionListener(e -> cardLayout.show(contenedorCentral, cmd));
+            btn.addActionListener(e -> {
+                if (cmd.equals("buscar_cli")) pnlBuscarClientes.actualizarTabla(""); 
+                if (cmd.equals("nueva_fact")) pnlVentaNueva.refrescarCombos(); 
+                if (cmd.equals("rep_periodo")) pnlReportes.filtrarPorPeriodo(); 
+                if (cmd.equals("dash")) pnlDash.refrescarEstadisticas();
+
+                cardLayout.show(contenedorCentral, cmd);
+            });
+            
             cuerpo.add(btn);
         }
         pnl.add(cuerpo, BorderLayout.CENTER);
@@ -145,7 +180,7 @@ public class VentanaPrincipal extends JFrame {
 
     private JButton crearBotonMenu(String texto, String comando) {
         JButton btn = new JButton(texto);
-        btn.setMaximumSize(new Dimension(250, 45)); // Ajuste para BoxLayout
+        btn.setMaximumSize(new Dimension(250, 45));
         btn.setBackground(AZUL_ALTICE);
         btn.setForeground(Color.WHITE);
         btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
@@ -155,9 +190,10 @@ public class VentanaPrincipal extends JFrame {
         btn.setFocusPainted(false);
         
         btn.addActionListener(e -> {
-            // Acciones específicas al cambiar de panel
-            if (comando.equals("rep_periodo")) pnlReportes.filtrarPorPeriodo();
+            // Refrescar datos al navegar
+            if (comando.equals("rep_periodo") && pnlReportes != null) pnlReportes.filtrarPorPeriodo();
             if (comando.equals("nueva_fact")) pnlVentaNueva.refrescarCombos();
+            if (comando.equals("dash") && pnlDash != null) pnlDash.refrescarEstadisticas();
             
             cardLayout.show(contenedorCentral, comando);
         });
