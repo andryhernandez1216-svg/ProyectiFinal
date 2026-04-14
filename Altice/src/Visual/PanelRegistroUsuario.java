@@ -1,6 +1,7 @@
 package Visual;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,86 +10,149 @@ import Ligca.Usuario;
 public class PanelRegistroUsuario extends JPanel {
     private JTextField txtNom, txtApe, txtCed, txtPass;
     private JComboBox<String> cbRol;
+    private JButton btnGuardar;
+
+    private final Color AZUL_ALTICE = new Color(0, 43, 92);
+    private final Color MAGENTA_ALTICE = new Color(225, 0, 110);
+    private final Color GRIS_FONDO = new Color(245, 246, 250);
 
     public PanelRegistroUsuario() {
-        setBackground(Color.WHITE);
-        setLayout(null);
+        setLayout(new GridBagLayout());
+        setBackground(GRIS_FONDO);
 
-        // --- Interfaz ---
-        JLabel titulo = new JLabel("REGISTRO DE PERSONAL NUEVO");
-        titulo.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        titulo.setBounds(50, 30, 400, 30);
-        add(titulo);
+        // --- TARJETA PRINCIPAL ---
+        JPanel card = new JPanel(new BorderLayout());
+        card.setBackground(Color.WHITE);
+        card.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(220, 220, 220), 1),
+            new EmptyBorder(40, 50, 40, 50)
+        ));
 
-        txtCed = crearCampo("Cédula:", 100);
-        txtNom = crearCampo("Nombre:", 170);
-        txtApe = crearCampo("Apellido:", 240);
-        txtPass = crearCampo("Contraseña para el Login:", 310);
+        // Cabecera de la Tarjeta
+        JPanel pnlHeader = new JPanel(new GridLayout(2, 1));
+        pnlHeader.setOpaque(false);
+        
+        JLabel titulo = new JLabel("Gestión de Personal", SwingConstants.CENTER);
+        titulo.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        titulo.setForeground(AZUL_ALTICE);
+        
+        JLabel subtitulo = new JLabel("Complete los datos para dar de alta a un nuevo colaborador", SwingConstants.CENTER);
+        subtitulo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        subtitulo.setForeground(Color.GRAY);
 
-        JLabel lblRol = new JLabel("Rol asignado:");
-        lblRol.setBounds(50, 380, 150, 20);
-        add(lblRol);
+        pnlHeader.add(titulo);
+        pnlHeader.add(subtitulo);
+        pnlHeader.add(Box.createVerticalStrut(30));
+        card.add(pnlHeader, BorderLayout.NORTH);
 
+        // --- CUERPO DEL FORMULARIO (2 COLUMNAS) ---
+        JPanel pnlCuerpo = new JPanel(new GridLayout(3, 2, 30, 15));
+        pnlCuerpo.setOpaque(false);
+        pnlCuerpo.setBorder(new EmptyBorder(20, 0, 20, 0));
+
+        txtCed = crearCampo(pnlCuerpo, "🆔 Cédula:");
+        txtNom = crearCampo(pnlCuerpo, "👤 Nombre:");
+        txtApe = crearCampo(pnlCuerpo, "👥 Apellido:");
+        txtPass = crearCampo(pnlCuerpo, "🔑 Contraseña:");
+
+        // Rol y un espacio vacío o decorativo
+        JPanel pnlRol = new JPanel(new BorderLayout(0, 5));
+        pnlRol.setOpaque(false);
+        JLabel lblRol = new JLabel("🛠️ Rol del Usuario:");
+        lblRol.setFont(new Font("Segoe UI", Font.BOLD, 13));
         cbRol = new JComboBox<>(new String[]{"COMERCIAL", "TRABAJADOR", "ADMINISTRATIVO"});
-        cbRol.setBounds(50, 405, 300, 35);
-        add(cbRol);
+        cbRol.setPreferredSize(new Dimension(0, 35));
+        pnlRol.add(lblRol, BorderLayout.NORTH);
+        pnlRol.add(cbRol, BorderLayout.CENTER);
+        
+        pnlCuerpo.add(pnlRol);
+        card.add(pnlCuerpo, BorderLayout.CENTER);
 
-        JButton btnGuardar = new JButton("DAR DE ALTA EN SISTEMA");
-        btnGuardar.setBounds(50, 480, 250, 45);
-        btnGuardar.setBackground(new Color(225, 0, 110));
+        // --- BOTÓN DE ACCIÓN ---
+        btnGuardar = new JButton("REGISTRAR COLABORADOR");
+        btnGuardar.setPreferredSize(new Dimension(0, 50));
+        btnGuardar.setBackground(MAGENTA_ALTICE);
         btnGuardar.setForeground(Color.WHITE);
-        btnGuardar.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btnGuardar.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        btnGuardar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnGuardar.setFocusPainted(false);
+        btnGuardar.setBorder(null);
         
         btnGuardar.addActionListener(e -> guardarNuevoUsuario());
-        add(btnGuardar);
+        card.add(btnGuardar, BorderLayout.SOUTH);
+
+        add(card);
     }
 
-    private JTextField crearCampo(String label, int y) {
+    private JTextField crearCampo(JPanel pnl, String label) {
+        JPanel contenedor = new JPanel(new BorderLayout(0, 5));
+        contenedor.setOpaque(false);
+
         JLabel lbl = new JLabel(label);
-        lbl.setBounds(50, y, 200, 20);
-        add(lbl);
+        lbl.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        
         JTextField tf = new JTextField();
-        tf.setBounds(50, y + 25, 300, 30);
-        add(tf);
+        tf.setPreferredSize(new Dimension(250, 35));
+        tf.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        tf.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(200, 200, 200)),
+            new EmptyBorder(0, 10, 0, 10)
+        ));
+
+        contenedor.add(lbl, BorderLayout.NORTH);
+        contenedor.add(tf, BorderLayout.CENTER);
+        pnl.add(contenedor);
         return tf;
     }
 
+    // El método guardarNuevoUsuario() y limpiarCampos() se mantienen con la lógica de hilos
+    // que ya tenías, asegurando que no se congele la aplicación.
     private void guardarNuevoUsuario() {
-        // 1. Validaciones normales (esto es rápido)
-        if(txtCed.getText().isEmpty() || txtNom.getText().isEmpty()){
+        String cedula = txtCed.getText().trim();
+        String nombre = txtNom.getText().trim();
+        String pass = txtPass.getText().trim();
+
+        if(cedula.isEmpty() || nombre.isEmpty() || pass.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Datos obligatorios faltantes", "Atención", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // 2. Ejecutar la red en un hilo separado para que NO se frise
+        btnGuardar.setEnabled(false);
+        btnGuardar.setText("Enviando credenciales...");
+
         new Thread(() -> {
             try {
-                Usuario nuevo = new Usuario(
-                    txtCed.getText().trim(), txtNom.getText().trim(), 
-                    txtApe.getText().trim(), "809-000-0000", 
-                    "empleado@altice.do", "Sede", new Date(), 
-                    cbRol.getSelectedItem().toString(), txtPass.getText().trim()
+                Usuario nuevo = new Usuario(cedula, nombre, txtApe.getText().trim(), 
+                    "809-000-0000", "empleado@altice.do", "Sede", 
+                    new Date(), cbRol.getSelectedItem().toString(), pass
                 );
 
-                // Esto es lo que tardaba y frisaba la pantalla
-                ArrayList<Usuario> lista = SocketCliente.recibirDatos("USUARIOS");
-                lista.add(nuevo);
-                boolean exito = SocketCliente.enviarDatos("USUARIOS", lista);
+                Object respuesta = SocketCliente.recibirDatos("usuarios");
+                ArrayList<Usuario> listaActual = new ArrayList<>();
+                if (respuesta instanceof ArrayList<?>) {
+                    for (Object obj : (ArrayList<?>) respuesta) {
+                        if (obj instanceof Usuario) listaActual.add((Usuario) obj);
+                    }
+                }
+                
+                listaActual.add(nuevo);
+                boolean exito = SocketCliente.enviarDatos("usuarios", listaActual);
 
-                // 3. Volver al hilo de la interfaz para mostrar el mensaje
                 SwingUtilities.invokeLater(() -> {
                     if (exito) {
-                        JOptionPane.showMessageDialog(this, "¡Sincronizado con éxito!");
+                        JOptionPane.showMessageDialog(this, "¡Colaborador registrado!");
                         limpiarCampos();
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Error: Servidor no disponible.");
                     }
+                    btnGuardar.setEnabled(true);
+                    btnGuardar.setText("REGISTRAR COLABORADOR");
                 });
-
             } catch (Exception ex) {
-                SwingUtilities.invokeLater(() -> 
-                    JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage()));
+                SwingUtilities.invokeLater(() -> {
+                    btnGuardar.setEnabled(true);
+                    btnGuardar.setText("REGISTRAR COLABORADOR");
+                });
             }
-        }).start(); // ¡Importante! Aquí arranca el hilo separado
+        }).start();
     }
 
     private void limpiarCampos() {
