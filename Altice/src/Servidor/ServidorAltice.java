@@ -18,7 +18,6 @@ public class ServidorAltice {
             while (true) {
                 Socket cliente = servidor.accept();
                 
-                // Los streams se crean fuera del try interno para manejarlos mejor
                 ObjectOutputStream salida = new ObjectOutputStream(cliente.getOutputStream());
                 salida.flush(); 
                 ObjectInputStream entrada = new ObjectInputStream(cliente.getInputStream());
@@ -46,13 +45,11 @@ public class ServidorAltice {
                 } finally {
                     cliente.close(); 
                 }
-            } // <--- AQUÍ FALTABA CERRAR EL WHILE
-        } catch (IOException e) { // <--- AQUÍ FALTABA CERRAR EL TRY DEL SERVERSOCKET
+            }
+        } catch (IOException e) { 
             e.printStackTrace();
         }
-    } // <--- AQUÍ CIERRA EL MÉTODO MAIN
-
-    // --- MÉTODOS DE APOYO (Fuera del Main, dentro de la Clase) ---
+    } 
 
     private static synchronized void guardarYRespaldar(ArrayList<?> lista, String archivo) throws IOException {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(archivo))) {
@@ -110,4 +107,4 @@ public class ServidorAltice {
             }
         }
     }
-} // <--- AQUÍ CIERRA LA CLASE
+} 

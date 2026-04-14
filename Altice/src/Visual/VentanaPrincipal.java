@@ -16,7 +16,6 @@ public class VentanaPrincipal extends JFrame {
     private PanelVentas pnlVentaNueva;
     private PanelReportes pnlReportes;
     private PanelPlanes pnlGestionPlanes;
-    // --- 1. FALTA DECLARAR LA VARIABLE AQUÍ ---
     private PanelRegistroUsuario pnlRegistro; 
 
     private final Color AZUL_ALTICE = new Color(0, 43, 92);
@@ -44,7 +43,6 @@ public class VentanaPrincipal extends JFrame {
     }
 
     private void inicializarComponentes() {
-        // --- 1. BARRA SUPERIOR (Se mantiene igual) ---
         barraSuperior = new JPanel(new BorderLayout());
         barraSuperior.setBackground(AZUL_ALTICE);
         barraSuperior.setPreferredSize(new Dimension(0, 70));
@@ -61,7 +59,7 @@ public class VentanaPrincipal extends JFrame {
         String rol = usuarioActual.getRol().toUpperCase();
 
         if (rol.equals("ADMINISTRATIVO")) {
-            pnlNavBotones.add(crearBotonNavbar("Dashboard", "dash"));
+            pnlNavBotones.add(crearBotonNavbar("Principal", "dash"));
         }
         
         pnlNavBotones.add(crearBotonNavbar("Clientes", "sel_cli"));
@@ -73,7 +71,6 @@ public class VentanaPrincipal extends JFrame {
         }
 
         if (rol.equals("ADMINISTRATIVO")) {
-            // El botón llama al comando "reg_user"
             pnlNavBotones.add(crearBotonNavbar("Usuarios", "reg_user"));
         }
 
@@ -84,7 +81,6 @@ public class VentanaPrincipal extends JFrame {
         lblUser.setFont(new Font("Segoe UI", Font.ITALIC, 13));
         barraSuperior.add(lblUser, BorderLayout.EAST);
 
-        // --- 2. CONTENEDOR CENTRAL ---
         cardLayout = new CardLayout();
         contenedorCentral = new JPanel(cardLayout);
         contenedorCentral.setBorder(new EmptyBorder(20, 20, 20, 20));
@@ -96,8 +92,7 @@ public class VentanaPrincipal extends JFrame {
         if (rol.equals("ADMINISTRATIVO")) {
             pnlDash = new PanelDashboard();
             contenedorCentral.add(pnlDash, "dash");
-            
-            // --- 2. AQUÍ ESTABA EL ERROR: DEBES AGREGAR EL PANEL DE REGISTRO ---
+
             pnlRegistro = new PanelRegistroUsuario();
             contenedorCentral.add(pnlRegistro, "reg_user"); 
         }
@@ -113,7 +108,6 @@ public class VentanaPrincipal extends JFrame {
         contenedorCentral.add(pnlBuscarClientes, "buscar_cli");
         contenedorCentral.add(pnlVentaNueva, "nueva_fact");
 
-        // Agregar este panel faltante si no estaba
         contenedorCentral.add(new PanelNuevoCliente(), "nuevo_cli");
 
         if (rol.equals("ADMINISTRATIVO") || rol.equals("TRABAJADOR")) {
@@ -147,12 +141,10 @@ public class VentanaPrincipal extends JFrame {
         });
 
         btn.addActionListener(e -> {
-            // --- 3. REFRESCAR ESTADÍSTICAS SI ES EL DASH ---
             if (comando.equals("dash") && pnlDash != null) pnlDash.refrescarEstadisticas();
             
             cardLayout.show(contenedorCentral, comando);
             
-            // Forzar repintado para evitar que se quede "en blanco"
             contenedorCentral.revalidate();
             contenedorCentral.repaint();
         });
@@ -172,8 +164,7 @@ public class VentanaPrincipal extends JFrame {
         cuerpo.setOpaque(false);
         for (int i = 0; i < opciones.length; i++) {
             final String cmd = comandos[i];
-            
-            // Si eres comercial y el botón de submenú lleva a reportes, no lo pongas
+
             if (cmd.equals("rep_periodo") && usuarioActual.getRol().equalsIgnoreCase("COMERCIAL")) {
                 continue;
             }

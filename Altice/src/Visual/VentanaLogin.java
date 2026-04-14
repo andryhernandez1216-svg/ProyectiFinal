@@ -69,15 +69,13 @@ public class VentanaLogin extends JFrame {
         String user = txtUser.getText().trim();
         String pass = new String(txtPass.getPassword()).trim();
 
-        // PRIORIDAD 1: Admin Maestro (Hardcoded)
         if (user.equals("admin") && pass.equals("1234")) {
             Usuario adminMaestro = new Usuario("000", "Admin", "Maestro", "000", "a@a.com", "Sede", new Date(), "ADMINISTRATIVO", "1234");
             new VentanaPrincipal(adminMaestro).setVisible(true);
             this.dispose();
-            return; // Salimos para no buscar en el servidor
+            return; 
         }
 
-        // PRIORIDAD 2: Buscar en el Servidor (Solo si no es el admin local)
         new Thread(() -> {
             try {
                 ArrayList<Usuario> registrados = SocketCliente.recibirDatos("USUARIOS");

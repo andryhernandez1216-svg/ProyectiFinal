@@ -16,17 +16,13 @@ public class PanelDashboard extends JPanel {
         setBackground(new Color(245, 246, 250)); 
         setLayout(new BorderLayout(20, 20));
         setBorder(new EmptyBorder(30, 30, 30, 30));
-
-        // Título
         JLabel titulo = new JLabel("Resumen General Altice");
         titulo.setFont(new Font("Segoe UI", Font.BOLD, 28));
         add(titulo, BorderLayout.NORTH);
 
-        // Contenedor de Tarjetas
         JPanel gridCartas = new JPanel(new GridLayout(1, 3, 25, 0));
         gridCartas.setOpaque(false);
 
-        // Inicializamos etiquetas con carga rápida
         lblIngresos = new JLabel("RD$ 0.00"); 
         lblClientes = new JLabel("0");
         lblContratos = new JLabel("0");
@@ -41,7 +37,6 @@ public class PanelDashboard extends JPanel {
         info.setFont(new Font("Segoe UI", Font.ITALIC, 12));
         add(info, BorderLayout.SOUTH);
 
-        // Carga inicial de datos
         refrescarEstadisticas();
     }
 
@@ -71,9 +66,6 @@ public class PanelDashboard extends JPanel {
         return card;
     }
 
-    /**
-     * Lógica de red para traer los datos reales
-     */
     public void refrescarEstadisticas() {
         new Thread(() -> {
             try {
@@ -83,20 +75,16 @@ public class PanelDashboard extends JPanel {
                 ArrayList<Cliente> clientes = (dataC instanceof ArrayList) ? (ArrayList<Cliente>) dataC : new ArrayList<>();
                 ArrayList<Factura> facturas = (dataF instanceof ArrayList) ? (ArrayList<Factura>) dataF : new ArrayList<>();
 
-                // 1. Calculamos los valores en variables LOCALES del hilo
                 float sumaAuxiliar = 0;
                 for (Factura f : facturas) {
                     sumaAuxiliar += f.getMontoTotal();
                 }
 
-                // 2. Pasamos los resultados finales a variables que no van a cambiar
                 final float resultadoIngresos = sumaAuxiliar;
                 final int resultadoClientes = clientes.size();
                 final int resultadoContratos = facturas.size();
 
-                // 3. Ahora sí, enviamos los valores finales a la UI
                 SwingUtilities.invokeLater(() -> {
-                    // Aquí usamos las variables 'final', Java ya no se queja
                     lblIngresos.setText("RD$ " + String.format("%.2f", resultadoIngresos));
                     lblClientes.setText(String.valueOf(resultadoClientes));
                     lblContratos.setText(String.valueOf(resultadoContratos));

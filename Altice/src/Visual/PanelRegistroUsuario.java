@@ -20,7 +20,6 @@ public class PanelRegistroUsuario extends JPanel {
         setLayout(new GridBagLayout());
         setBackground(GRIS_FONDO);
 
-        // --- TARJETA PRINCIPAL ---
         JPanel card = new JPanel(new BorderLayout());
         card.setBackground(Color.WHITE);
         card.setBorder(BorderFactory.createCompoundBorder(
@@ -28,7 +27,6 @@ public class PanelRegistroUsuario extends JPanel {
             new EmptyBorder(40, 50, 40, 50)
         ));
 
-        // Cabecera de la Tarjeta
         JPanel pnlHeader = new JPanel(new GridLayout(2, 1));
         pnlHeader.setOpaque(false);
         
@@ -45,7 +43,6 @@ public class PanelRegistroUsuario extends JPanel {
         pnlHeader.add(Box.createVerticalStrut(30));
         card.add(pnlHeader, BorderLayout.NORTH);
 
-        // --- CUERPO DEL FORMULARIO (2 COLUMNAS) ---
         JPanel pnlCuerpo = new JPanel(new GridLayout(3, 2, 30, 15));
         pnlCuerpo.setOpaque(false);
         pnlCuerpo.setBorder(new EmptyBorder(20, 0, 20, 0));
@@ -55,7 +52,6 @@ public class PanelRegistroUsuario extends JPanel {
         txtApe = crearCampo(pnlCuerpo, "👥 Apellido:");
         txtPass = crearCampo(pnlCuerpo, "🔑 Contraseña:");
 
-        // Rol y un espacio vacío o decorativo
         JPanel pnlRol = new JPanel(new BorderLayout(0, 5));
         pnlRol.setOpaque(false);
         JLabel lblRol = new JLabel("🛠️ Rol del Usuario:");
@@ -68,7 +64,6 @@ public class PanelRegistroUsuario extends JPanel {
         pnlCuerpo.add(pnlRol);
         card.add(pnlCuerpo, BorderLayout.CENTER);
 
-        // --- BOTÓN DE ACCIÓN ---
         btnGuardar = new JButton("REGISTRAR COLABORADOR");
         btnGuardar.setPreferredSize(new Dimension(0, 50));
         btnGuardar.setBackground(MAGENTA_ALTICE);
@@ -105,8 +100,6 @@ public class PanelRegistroUsuario extends JPanel {
         return tf;
     }
 
-    // El método guardarNuevoUsuario() y limpiarCampos() se mantienen con la lógica de hilos
-    // que ya tenías, asegurando que no se congele la aplicación.
     private void guardarNuevoUsuario() {
         String cedula = txtCed.getText().trim();
         String nombre = txtNom.getText().trim();

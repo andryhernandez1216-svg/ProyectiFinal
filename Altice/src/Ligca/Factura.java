@@ -24,11 +24,10 @@ public class Factura implements java.io.Serializable {
         this.estado = false;
     }
 
-    // Métodos necesarios para el Panel de Reportes
     public String getIdFactura() { return idFactura; }
     public Cliente getCliente() { return cliente; }
     public Date getFecha() { return fecha; }
-    public float getMontoTotal() { return total; } // Este es el que pedía el reporte
+    public float getMontoTotal() { return total; }
     public boolean isEstado() { return estado; }
 
     public void agregarDetalle(DetalleFactura d) {

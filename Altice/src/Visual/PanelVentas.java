@@ -17,17 +17,15 @@ public class PanelVentas extends JPanel {
     private JButton btnVenta;
     private Usuario usuarioActual;
     
-    // Colores Altice
     private final Color MAGENTA_ALTICE = new Color(225, 0, 110);
     private final Color AZUL_ALTICE = new Color(0, 43, 92);
 
     public PanelVentas(Usuario user) {
         this.usuarioActual = user;
-        setBackground(new Color(245, 246, 250)); // Gris muy claro de fondo
+        setBackground(new Color(245, 246, 250)); 
         setLayout(new BorderLayout(20, 20));
         setBorder(new EmptyBorder(25, 25, 25, 25));
 
-        // --- PANEL DE SELECCIÓN (IZQUIERDA) ---
         JPanel pnlIzquierdo = new JPanel(new GridBagLayout());
         pnlIzquierdo.setOpaque(false);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -38,7 +36,6 @@ public class PanelVentas extends JPanel {
         cbCliente = new JComboBox<>();
         cbPlan = new JComboBox<>();
         
-        // Estilizar combos
         cbCliente.setPreferredSize(new Dimension(300, 35));
         cbPlan.setPreferredSize(new Dimension(300, 35));
 
@@ -59,18 +56,16 @@ public class PanelVentas extends JPanel {
         gbc.gridy = 4; gbc.insets = new Insets(30, 0, 10, 0);
         pnlIzquierdo.add(btnVenta, gbc);
 
-        // --- PANEL DE RECIBO (DERECHA) ---
         areaFactura = new JTextArea();
         areaFactura.setFont(new Font("Monospaced", Font.PLAIN, 14));
         areaFactura.setEditable(false);
-        areaFactura.setBackground(new Color(255, 255, 240)); // Papel crema
+        areaFactura.setBackground(new Color(255, 255, 240)); 
         
         JScrollPane scrollFactura = new JScrollPane(areaFactura);
         scrollFactura.setBorder(BorderFactory.createTitledBorder(
             BorderFactory.createLineBorder(Color.LIGHT_GRAY), "VISTA PREVIA DE FACTURA", 
             TitledBorder.CENTER, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 12)));
 
-        // Distribución Final
         add(pnlIzquierdo, BorderLayout.WEST);
         add(scrollFactura, BorderLayout.CENTER);
 
@@ -83,7 +78,6 @@ public class PanelVentas extends JPanel {
         
         new Thread(() -> {
             try {
-                // Sincronizamos con las claves exactas que usa tu servidor
                 Object dataClientes = SocketCliente.recibirDatos("clientes");
                 Object dataPlanes = SocketCliente.recibirDatos("planes");
 
@@ -114,20 +108,17 @@ public class PanelVentas extends JPanel {
             return;
         }
 
-        // Bloqueamos para evitar doble clic
         btnVenta.setEnabled(false);
         btnVenta.setText("Procesando...");
 
         new Thread(() -> {
             try {
-                // 1. Obtención de datos históricos
                 Object dCli = SocketCliente.recibirDatos("clientes");
                 Object dFac = SocketCliente.recibirDatos("facturas");
 
                 ArrayList<Cliente> listaCli = (dCli instanceof ArrayList) ? (ArrayList<Cliente>) dCli : new ArrayList<>();
                 ArrayList<Factura> listaFac = (dFac instanceof ArrayList) ? (ArrayList<Factura>) dFac : new ArrayList<>();
 
-                // 2. Actualizar Deuda
                 boolean exitoActualizacion = false;
                 for (Cliente c : listaCli) {
                     if (c.getCedula().equals(cSel.getCedula())) {
@@ -138,7 +129,6 @@ public class PanelVentas extends JPanel {
                 }
 
                 if (exitoActualizacion) {
-                    // 3. Crear Factura y Detalle
                     String idFac = "FAC-" + (System.currentTimeMillis() % 100000);
                     Factura nuevaFac = new Factura(idFac, cSel, null, new Date());
                     
@@ -146,7 +136,6 @@ public class PanelVentas extends JPanel {
                     nuevaFac.agregarDetalle(det);
                     listaFac.add(nuevaFac);
 
-                    // 4. Guardado Doble
                     SocketCliente.enviarDatos("clientes", listaCli);
                     SocketCliente.enviarDatos("facturas", listaFac);
 

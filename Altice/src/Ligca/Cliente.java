@@ -3,13 +3,8 @@ package Ligca;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * Clase Cliente que extiende de Persona.
- * Debe ser Serializable porque se envía dentro de los objetos Contrato.
- */
 public class Cliente extends Persona implements Serializable {
 
-    // ID de versión para asegurar la compatibilidad en la red
     private static final long serialVersionUID = 1L;
 
     private String codigoCliente;
@@ -35,7 +30,6 @@ public class Cliente extends Persona implements Serializable {
         }
     }
 
-    // --- Getters y Setters con validaciones ---
 
     public String getCodigoCliente() { return codigoCliente; }
 
@@ -76,7 +70,6 @@ public class Cliente extends Persona implements Serializable {
         this.cantDePagosAtrasados = cantPagosAtrasados;
     }
 
-    // --- Lógica de Negocio ---
 
     public void pagarDeuda(float monto) throws Exception {
         if (monto <= 0) throw new Exception("Monto inválido.");
@@ -91,7 +84,6 @@ public class Cliente extends Persona implements Serializable {
 
     @Override
     public String toString() {
-        // Formato limpio para JComboBox y reportes
         return String.format("%s %s [%s]", getNombre(), getApellido(), codigoCliente);
     }
 }

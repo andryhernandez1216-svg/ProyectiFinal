@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 public class Plan implements Serializable {
 
-    // ID de versión para compatibilidad entre Cliente y Servidor
     private static final long serialVersionUID = 1L;
 
     private String idPlan;
@@ -29,7 +28,6 @@ public class Plan implements Serializable {
         this.estado = estado;
     }
 
-    // --- Getters y Setters con validaciones ---
 
     public String getIdPlan() {
         return idPlan;
@@ -116,8 +114,6 @@ public class Plan implements Serializable {
         this.estado = estado;
     }
 
-    // --- Lógica de Negocio ---
-
     public void activar() { this.estado = true; }
     public void desactivar() { this.estado = false; }
     public boolean estaDisponible() { return estado; }
@@ -138,7 +134,6 @@ public class Plan implements Serializable {
 
     @Override
     public String toString() {
-        // Formato para que se vea bien en los ComboBox de la interfaz
         return String.format("%s - RD$%.2f (%s)", nombre, precio, velocidad);
     }
 }

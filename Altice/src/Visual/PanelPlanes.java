@@ -65,7 +65,6 @@ public class PanelPlanes extends JPanel {
         lblContent.setForeground(colorBase);
         card.add(lblContent, BorderLayout.CENTER);
 
-        // --- SOLUCIÓN AL ERROR DE HOVER ---
         card.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -89,7 +88,6 @@ public class PanelPlanes extends JPanel {
     private void abrirFormulario(String tipo) {
         this.tipoSeleccionado = tipo;
         
-        // Ajuste dinámico de etiquetas
         switch(tipo) {
             case "INTERNET": lblDetalleDinamico.setText("Velocidad de Subida/Bajada (Mbps):"); break;
             case "TV": lblDetalleDinamico.setText("Número de Canales:"); break;
@@ -112,13 +110,11 @@ public class PanelPlanes extends JPanel {
             new EmptyBorder(30, 40, 30, 40)
         ));
 
-        // Título del Form
         JLabel tit = new JLabel("Detalles del Nuevo Plan");
         tit.setFont(new Font("Segoe UI", Font.BOLD, 20));
         tit.setAlignmentX(Component.LEFT_ALIGNMENT);
         form.add(tit); form.add(Box.createVerticalStrut(20));
 
-        // Componentes
         txtNombre = agregarCampoAlForm(form, "Nombre del Plan:");
         txtPrecio = agregarCampoAlForm(form, "Precio Mensual (RD$):");
         
@@ -129,7 +125,6 @@ public class PanelPlanes extends JPanel {
         txtDetalle.setMaximumSize(new Dimension(400, 35));
         form.add(txtDetalle); form.add(Box.createVerticalStrut(20));
 
-        // Botones
         JPanel pnlBtns = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         pnlBtns.setOpaque(false);
         
@@ -176,7 +171,6 @@ public class PanelPlanes extends JPanel {
             try {
                 float precio = Float.parseFloat(precioStr);
                 
-                // Creamos el nuevo objeto Plan
                 Plan nuevoPlan = new Plan(
                     "PLN-" + System.currentTimeMillis(), 
                     nombre, 
@@ -188,11 +182,9 @@ public class PanelPlanes extends JPanel {
                     true
                 );
 
-                // 1. Recibimos los datos como un Objeto genérico para evitar el error de cast
                 Object respuesta = SocketCliente.recibirDatos("PLANES");
                 ArrayList<Plan> listaActualizada = new ArrayList<>();
 
-                // 2. Validación segura de la lista (Solución al error de cast)
                 if (respuesta instanceof ArrayList<?>) {
                     ArrayList<?> listaRecibida = (ArrayList<?>) respuesta;
                     for (Object obj : listaRecibida) {
@@ -202,7 +194,6 @@ public class PanelPlanes extends JPanel {
                     }
                 }
 
-                // 3. Añadimos el nuevo plan y enviamos al servidor
                 listaActualizada.add(nuevoPlan);
                 boolean exito = SocketCliente.enviarDatos("PLANES", listaActualizada);
 

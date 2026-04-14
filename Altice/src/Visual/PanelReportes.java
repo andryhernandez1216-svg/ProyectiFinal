@@ -26,11 +26,9 @@ public class PanelReportes extends JPanel {
         setBackground(new Color(245, 246, 250));
         setBorder(new EmptyBorder(25, 25, 25, 25));
 
-        // --- PANEL SUPERIOR: FILTROS Y BÚSQUEDA ---
         JPanel pnlSuperior = new JPanel(new BorderLayout(10, 10));
         pnlSuperior.setOpaque(false);
 
-        // Fila 1: Filtros de Fecha
         JPanel pnlFiltros = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 0));
         pnlFiltros.setOpaque(false);
         
@@ -45,7 +43,6 @@ public class PanelReportes extends JPanel {
         pnlFiltros.add(new JLabel("Hasta:")); pnlFiltros.add(spinFin);
         pnlFiltros.add(btnCargar);
 
-        // Fila 2: Buscador Inteligente
         JPanel pnlBusqueda = new JPanel(new BorderLayout(10, 0));
         pnlBusqueda.setOpaque(false);
         pnlBusqueda.setBorder(new EmptyBorder(15, 15, 0, 0));
@@ -53,7 +50,6 @@ public class PanelReportes extends JPanel {
         txtBuscar = new JTextField();
         txtBuscar.setPreferredSize(new Dimension(300, 35));
         txtBuscar.setToolTipText("Buscar por cliente o ID de factura...");
-        // Evento de búsqueda en tiempo real (Lambda)
         txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 aplicarFiltroBusqueda();
@@ -66,7 +62,6 @@ public class PanelReportes extends JPanel {
         pnlSuperior.add(pnlFiltros, BorderLayout.NORTH);
         pnlSuperior.add(pnlBusqueda, BorderLayout.SOUTH);
 
-        // --- PANEL CENTRAL: TABLA ESTILIZADA ---
         String[] columnas = {"ID Factura", "Cliente", "Fecha Emisión", "Importe Total"};
         modelo = new DefaultTableModel(columnas, 0) {
             @Override
@@ -76,7 +71,6 @@ public class PanelReportes extends JPanel {
         tabla = new JTable(modelo);
         configurarTabla();
 
-        // --- PANEL INFERIOR: RESUMEN Y EXPORTAR ---
         JPanel pnlInferior = new JPanel(new BorderLayout());
         pnlInferior.setOpaque(false);
         pnlInferior.setBorder(new EmptyBorder(10, 0, 0, 0));

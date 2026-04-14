@@ -6,16 +6,15 @@ import java.util.Date;
 
 public class Contrato implements Serializable {
 
-    // ID de versión para la red
     private static final long serialVersionUID = 1L;
 
     private String idContrato;
-    private Cliente cliente; // Esta clase DEBE ser Serializable
-    private Plan plan;       // Esta clase DEBE ser Serializable
+    private Cliente cliente; 
+    private Plan plan;       
     private Date fechaInicio;
     private Date fechaFin;
     private boolean estado;
-    private ArrayList<Servicio> servicios; // La clase Servicio DEBE ser Serializable
+    private ArrayList<Servicio> servicios; 
 
     public Contrato(String idContrato, Cliente cliente, Plan plan, Date fechaInicio, Date fechaFin, boolean estado) {
         try {
@@ -31,7 +30,6 @@ public class Contrato implements Serializable {
         }
     }
 
-    // --- Métodos de Acceso ---
 
     public String getIdContrato() { return idContrato; }
 
@@ -80,7 +78,6 @@ public class Contrato implements Serializable {
 
     public ArrayList<Servicio> getServicios() { return servicios; }
 
-    // --- Lógica de Negocio ---
 
     public void agregarServicio(Servicio servicio) throws Exception {
         if (servicio == null)

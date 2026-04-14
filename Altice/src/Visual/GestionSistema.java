@@ -7,7 +7,6 @@ public class GestionSistema {
 
     public static SistemaAltice getInstancia() {
         if (instancia == null) {
-            // Ahora llamamos al constructor vacío que definimos
             instancia = new SistemaAltice();
         }
         return instancia;

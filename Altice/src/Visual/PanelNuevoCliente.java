@@ -44,7 +44,7 @@ public class PanelNuevoCliente extends JPanel {
         pnlCampos.add(new JLabel("Tipo:"));          pnlCampos.add(cbTipo);
 
         JButton btnGuardar = new JButton("Registrar Nuevo Cliente");
-        btnGuardar.setBackground(new Color(225, 0, 110)); // Color Altice
+        btnGuardar.setBackground(new Color(225, 0, 110)); 
         btnGuardar.setForeground(Color.WHITE);
         btnGuardar.setFont(new Font("Segoe UI", Font.BOLD, 13));
         btnGuardar.addActionListener(e -> registrar());
@@ -60,7 +60,6 @@ public class PanelNuevoCliente extends JPanel {
             return;
         }
 
-        // Ejecutar en hilo para no congelar la app mientras el servidor guarda
         new Thread(() -> {
             try {
                 Cliente nuevo = new Cliente(
@@ -76,7 +75,6 @@ public class PanelNuevoCliente extends JPanel {
                     true, 0.0f, 0
                 );
 
-                // PROTOCOLO DE RED
                 ArrayList<Cliente> listaActual = SocketCliente.recibirDatos("CLIENTES");
                 listaActual.add(nuevo);
                 boolean exito = SocketCliente.enviarDatos("CLIENTES", listaActual);

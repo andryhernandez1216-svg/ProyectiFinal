@@ -9,7 +9,6 @@ public class SocketCliente {
     private static final int PUERTO = 5000;
 
     public static boolean enviarDatos(String tipo, ArrayList<?> lista) {
-        // Al usar try-with-resources, los streams se cierran solos
         try (Socket s = new Socket(IP, PUERTO);
              ObjectOutputStream salida = new ObjectOutputStream(s.getOutputStream())) {
             
@@ -24,8 +23,6 @@ public class SocketCliente {
             return respuesta != null && respuesta.equals("OK");
             
         } catch (Exception e) {
-            // Este catch "silencia" la excepción hacia afuera, 
-            // por lo que el Panel no debería pedirte un try-catch extra.
             System.err.println("Error en enviarDatos: " + e.getMessage());
             return false;
         }

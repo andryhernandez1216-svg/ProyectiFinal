@@ -3,10 +3,8 @@ package Ligca;
 import java.io.Serializable;
 import java.util.Date;
 
-// Agregamos implements Serializable para que pueda viajar por Sockets
 public class Empleado extends Persona implements Serializable {
 
-    // ID de versión para evitar errores de compatibilidad en el servidor
     private static final long serialVersionUID = 1L;
 
     private String codigo;
@@ -16,12 +14,10 @@ public class Empleado extends Persona implements Serializable {
     private float comisiones;
     private boolean activo;
 
-    // Constructor actualizado
     public Empleado(String cedula, String nombre, String apellido, String telefono, String email,
                     String direccion, Date fechaRegistro, String codigo, float salario, Date fechaIngreso,
                     String estado, float comisiones, boolean activo) {
 
-        // Llamada al constructor de Persona (que ya es Serializable)
         super(cedula, nombre, apellido, telefono, email, direccion, fechaRegistro);
         
         try {
@@ -36,7 +32,6 @@ public class Empleado extends Persona implements Serializable {
         }
     }
 
-    // --- Métodos de acceso con validaciones ---
 
     public String getCodigo() { return codigo; }
 
@@ -76,7 +71,6 @@ public class Empleado extends Persona implements Serializable {
     public boolean isActivo() { return activo; }
     public void setActivo(boolean activo) { this.activo = activo; }
 
-    // --- Lógica de Negocio ---
 
     public void aumentarSalario(float porcentaje) throws Exception {
         if (porcentaje <= 0)
@@ -91,7 +85,6 @@ public class Empleado extends Persona implements Serializable {
     public int getAniosEnEmpresa() {
         if (fechaIngreso == null) return 0;
         long diferencia = new Date().getTime() - fechaIngreso.getTime();
-        // 365.25 para considerar años bisiestos en cálculos largos
         return (int) (diferencia / (1000L * 60 * 60 * 24 * 365));
     }
 

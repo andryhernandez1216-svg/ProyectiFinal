@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 public class Servicio implements Serializable {
 
-    // Identificador de versión para la comunicación entre Cliente y Servidor
     private static final long serialVersionUID = 1L;
 
     private String idServicio;
@@ -27,7 +26,6 @@ public class Servicio implements Serializable {
         }
     }
 
-    // --- Getters y Setters con validaciones ---
 
     public String getIdServicio() { return idServicio; }
 
@@ -72,7 +70,6 @@ public class Servicio implements Serializable {
     public boolean isEstado() { return estado; }
     public void setEstado(boolean estado) { this.estado = estado; }
 
-    // --- Lógica de Negocio ---
 
     public void activar() { this.estado = true; }
     public void desactivar() { this.estado = false; }
@@ -86,7 +83,6 @@ public class Servicio implements Serializable {
 
     @Override
     public String toString() {
-        // Formato para JComboBox en la interfaz de Contratos
         return String.format("%s (RD$%.2f)", nombre, precio);
     }
 }

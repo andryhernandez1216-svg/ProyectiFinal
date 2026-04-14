@@ -16,11 +16,8 @@ public abstract class Persona implements Serializable {
     private String direccion;
     private Date fechaRegistro;
     
-    // Eliminamos el contador estático aquí si vamos a usar Sockets, 
-    // es mejor asignarlo en el momento del registro.
 
     public Persona() {
-        // Constructor vacío necesario para algunas librerías de serialización
     }
 
     public Persona(String cedula, String nombre, String apellido,
@@ -33,17 +30,15 @@ public abstract class Persona implements Serializable {
             setEmail(email);
             setDireccion(direccion);
             setFechaRegistro(fechaRegistro);
-            // El ID ahora es la cédula para evitar el error del contador estático
             this.id = cedula; 
         } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
 
-    // --- Getters y Setters ---
 
     public String getId() { return id; }
-    public void setId(String id) { this.id = id; } // Permitir cambiar el ID si es necesario
+    public void setId(String id) { this.id = id; } 
 
     public String getCedula() { return cedula; }
 
@@ -95,7 +90,6 @@ public abstract class Persona implements Serializable {
         this.fechaRegistro = fechaRegistro;
     }
 
-    // --- Métodos de Ayuda ---
 
     public String getNombreCompleto() {
         return nombre + " " + apellido;

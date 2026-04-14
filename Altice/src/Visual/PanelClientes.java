@@ -24,7 +24,6 @@ public class PanelClientes extends JPanel {
         setBackground(new Color(245, 246, 250));
         setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        // --- 1. BARRA DE BÚSQUEDA ---
         JPanel pnlNorte = new JPanel(new BorderLayout(10, 0));
         pnlNorte.setOpaque(false);
 
@@ -35,7 +34,6 @@ public class PanelClientes extends JPanel {
             BorderFactory.createEmptyBorder(8, 12, 8, 12)
         ));
         
-        // Label flotante o placeholder (simulado con TitledBorder estilizado)
         txtBuscar.setBorder(BorderFactory.createTitledBorder("🔍 Buscar por nombre, apellido o cédula"));
 
         txtBuscar.addKeyListener(new KeyAdapter() {
@@ -54,7 +52,6 @@ public class PanelClientes extends JPanel {
         pnlNorte.add(txtBuscar, BorderLayout.CENTER);
         pnlNorte.add(btnRefrescar, BorderLayout.EAST);
 
-        // --- 2. CONFIGURACIÓN DE TABLA ---
         modelo = new DefaultTableModel(new String[]{"Cédula", "Cliente", "ID Sistema", "Balance Pendiente", "Estado"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) { return false; }
@@ -62,7 +59,7 @@ public class PanelClientes extends JPanel {
 
         tabla = new JTable(modelo);
         tabla.setRowHeight(35);
-        tabla.setSelectionBackground(new Color(225, 0, 110, 40)); // Magenta suave al seleccionar
+        tabla.setSelectionBackground(new Color(225, 0, 110, 40)); 
         tabla.setSelectionForeground(Color.BLACK);
         tabla.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 13));
         tabla.getTableHeader().setBackground(AZUL_ALTICE);
@@ -84,7 +81,6 @@ public class PanelClientes extends JPanel {
     }
 
     private void estilizarColumnas() {
-        // Columna de Balance (3) y Estado (4)
         tabla.getColumnModel().getColumn(3).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -92,8 +88,8 @@ public class PanelClientes extends JPanel {
                 String val = value.toString().replace("RD$ ", "");
                 try {
                     double deuda = Double.parseDouble(val.replace(",", ""));
-                    if (deuda > 0) setForeground(new Color(180, 0, 0)); // Rojo si debe
-                    else setForeground(new Color(0, 120, 0)); // Verde si está limpio
+                    if (deuda > 0) setForeground(new Color(180, 0, 0)); 
+                    else setForeground(new Color(0, 120, 0)); 
                 } catch (Exception e) { setForeground(Color.BLACK); }
                 return c;
             }
